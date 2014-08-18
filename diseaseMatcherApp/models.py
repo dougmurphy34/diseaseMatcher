@@ -13,6 +13,10 @@ class Abstract(models.Model):
     def __unicode__(self):
         return self.title
 
-#users who
+#users
 class annotator(models.Model):
     username = models.TextField(max_length=25)
+    last_entry_date = models.DateTimeField()
+
+    def __unicode__(self):
+        return self.username
