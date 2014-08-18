@@ -17,6 +17,10 @@ Tools used:     django 1.6.5 web framework (lab standard, personal preference fo
 	            GitHub - source control (dougmurphy34/diseaseMatcher)
 	            South - data migration
 
+Design Principles used:
+    test-driven development
+    MVC model as implemented by django
+
 Design requests/notes:
     crude UI is OK - that's not the concern
     not linear - something that could be grown.  Organizing code beyond functions.
