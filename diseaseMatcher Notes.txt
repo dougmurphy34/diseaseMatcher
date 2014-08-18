@@ -1,6 +1,6 @@
-Objective: Develop a citizen science game, based on ESP/Google Image Labeler model, to identify disease names in the text of biomedical research abstracts.
+Objective: Develop a citizen science game, based on ESP/Google Image Labeler model, to identify locations of disease names in the text of biomedical research abstracts.
 
-Features: User login/profiles, Synchronous PVP, player vs. AI if no active opponent, time pressure, document storage and display, results storage.
+Features: User login/profiles, player vs. AI if no active opponent, time pressure, document storage and display, results storage.
 
 Models: Artigo.org - successor to ESP
         Cyclonecenter.org and others at zooniverse.org
@@ -22,6 +22,3 @@ Design Principles used:
     MVC model as implemented by django
     Loose coupling
     Agile Development (Frequent functional builds)
-
-
-(GIT, I am a change, look at me!!!)
