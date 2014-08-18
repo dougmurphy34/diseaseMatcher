@@ -15,7 +15,8 @@ Tools used:     django 1.6.5 web framework (lab standard, personal preference fo
 	            MySQL-python 1.2.5
 	                binary from http://www.lfd.uci.edu/~gohlke/pythonlibs/
 	            GitHub - source control (dougmurphy34/diseaseMatcher)
-	            South - data migration
+	            NO data migration - just syncdb
+	                (confirmed, South does not and will not support MariaDB http://south.aeracode.org/ticket/1309)
 
 Design Principles used:
     test-driven development
