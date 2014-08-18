@@ -36,7 +36,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'south'
+    'south',
+    'diseaseMatcherApp'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -60,11 +61,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'diseasematcherdb',
-        'USERNAME': 'diseaseMatcherUser',
+        'USER': 'root',
         'PASSWORD': 't0blaive',
         'HOST': '127.0.0.1'
-
-
     }
 }
 

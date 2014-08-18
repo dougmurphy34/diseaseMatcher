@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="1242765550">
+    <data-source source="LOCAL" name="Django default" uuid="34f43c33-ab65-4872-8029-9dae14176047">
+      <driver-ref>mysql</driver-ref>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://127.0.0.1/diseasematcherdb</jdbc-url>
+      <user-name>root</user-name>
+      <user-password>dfdedf9adfc8dfc6dfcbdfc3dfdcdfcf</user-password>
+      <libraries />
+    </data-source>
+  </component>
+</project>
+
