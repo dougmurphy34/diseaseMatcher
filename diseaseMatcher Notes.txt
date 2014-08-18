@@ -1,0 +1,24 @@
+Objective: Develop a citizen science game, based on ESP/Google Image Labeler model, to identify disease names in the text of biomedical research abstracts.
+
+Features: User login/profiles, Synchronous PVP, player vs. AI if no active opponent, time pressure, document storage and display, results storage.
+
+Models: Artigo.org - successor to ESP
+        Cyclonecenter.org and others at zooniverse.org
+
+Tools used:     django 1.6.5 web framework (lab standard, personal preference for python over java)
+		        MariaDB 10 (more feature rich than mySQL, easier administration than PostgreSQL)
+		        Python 2.7
+	            VirtualEnvWrapper (Windows port):
+		           https://pypi.python.org/pypi/virtualenvwrapper-win
+	            Pycharm Enterprise
+	            HeidiSQL
+	            MySQL-python 1.2.5
+	                binary from http://www.lfd.uci.edu/~gohlke/pythonlibs/
+	            GitHub - source control (dougmurphy34/diseaseMatcher)
+	            South - data migration
+
+Design requests/notes:
+    crude UI is OK - that's not the concern
+    not linear - something that could be grown.  Organizing code beyond functions.
+    Bootstrap, jquery as possible UI tools.
+    Working prototypes.
