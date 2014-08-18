@@ -20,6 +20,8 @@ Tools used:     django 1.6.5 web framework (lab standard, personal preference fo
 Design Principles used:
     test-driven development
     MVC model as implemented by django
+    Loose coupling
+    Agile Development (Frequent functional builds)
 
 Design requests/notes:
     crude UI is OK - that's not the concern
