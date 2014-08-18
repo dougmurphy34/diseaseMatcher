@@ -22,9 +22,3 @@ Design Principles used:
     MVC model as implemented by django
     Loose coupling
     Agile Development (Frequent functional builds)
-
-Design requests/notes:
-    crude UI is OK - that's not the concern
-    not linear - something that could be grown.  Organizing code beyond functions.
-    Bootstrap, jquery as possible UI tools.
-    Working prototypes.
