@@ -14,14 +14,27 @@ class Abstract(models.Model):
     def __unicode__(self):
         return self.title
 
+
 #users
-class annotator(models.Model):
+class Annotator(models.Model):
     username = models.TextField(max_length=25)
     last_entry_date = models.DateTimeField(default=timezone.now())
 
     def __unicode__(self):
         return self.username
 
-class unused_temp_class(models.Model):
-    string_field = models.TextField(max_length=10)
-    number_field = models.IntegerField(default=0)
+
+class MatchTypes(models.Model):
+    #Lookup table.  Current options: modifier, specific, class, composite
+    type_name = models.TextField(max_length=15)
+
+    def __unicode__(self):
+        return self.type_name
+
+
+class Matches(models.Model):
+    annotator = models.ForeignKey(Annotator)
+    match_type = models.ForeignKey(MatchTypes)
+    text_matched = models.TextField(max_length=50)
+    start_match = models.IntegerField()
+    end_match = models.IntegerField()
