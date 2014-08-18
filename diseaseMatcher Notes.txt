@@ -22,3 +22,6 @@ Design Principles used:
     MVC model as implemented by django
     Loose coupling
     Agile Development (Frequent functional builds)
+
+
+(GIT, I am a change, look at me!!!)
