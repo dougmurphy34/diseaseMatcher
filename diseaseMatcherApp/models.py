@@ -18,7 +18,7 @@ class Abstract(models.Model):
 #users
 class Annotator(models.Model):
     username = models.TextField(max_length=25)
-    last_entry_date = models.DateTimeField(default=timezone.now())
+    last_entry_date = models.DateTimeField()
 
     def __unicode__(self):
         return self.username
@@ -31,7 +31,7 @@ class MatchTypes(models.Model):
     def __unicode__(self):
         return self.type_name
 
-
+#what we are collecting
 class Matches(models.Model):
     annotator = models.ForeignKey(Annotator)
     match_type = models.ForeignKey(MatchTypes)
