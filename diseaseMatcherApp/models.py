@@ -4,6 +4,7 @@ from django.utils import timezone
 
 # Create your models here.
 
+
 #Raw data to be classified
 class Abstract(models.Model):
     abstract_id = models.IntegerField()
@@ -24,12 +25,13 @@ class Annotator(models.Model):
         return self.username
 
 
+#Lookup table.  Current options: modifier, specific, class, composite
 class MatchTypes(models.Model):
-    #Lookup table.  Current options: modifier, specific, class, composite
     type_name = models.TextField(max_length=15)
 
     def __unicode__(self):
         return self.type_name
+
 
 #what we are collecting
 class Matches(models.Model):

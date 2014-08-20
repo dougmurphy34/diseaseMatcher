@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', include('diseaseMatcherApp.urls', namespace='diseaseMatcherApp'))
+    url(r'^diseaseMatcher/', include('diseaseMatcherApp.urls', namespace='diseaseMatcherApp')),
+    url(r'^$', views.home_page, name='homePage')
 
 )

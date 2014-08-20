@@ -23,3 +23,10 @@ Design Principles used:
     MVC model as implemented by django
     Loose coupling
     Agile Development (Frequent functional builds)
+
+
+Status of development (8/20/2014):
+    Landing page receives user, navigates to single (random) abstract display
+
+Next steps:
+    Take text input from user and store it in database
