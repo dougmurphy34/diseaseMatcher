@@ -28,7 +28,8 @@ Design Principles used:
 
 Status of development (8/20/2014):
     Landing page receives user, navigates to single (random) abstract display with input form
-    Baseline UI functionality on abstract display (for user input)
+    User can enter text (disease matches) for that abstract, and results are stored in the database on submission.
 
 Next steps:
-    Store user input in database
+    Post-submission navigation.
+    Error checking and tests for database submissions.

@@ -19,7 +19,7 @@ class Abstract(models.Model):
 #users
 class Annotator(models.Model):
     #TODO: Implement password field (salt hash, etc)
-    #TODO: Once login is implememted, disallow blank/null for last_entry_date
+    #TODO: Once login is implemented, disallow blank/null for last_entry_date
     username = models.TextField(max_length=25)
     last_entry_date = models.DateTimeField(null=True, blank=True)
 
