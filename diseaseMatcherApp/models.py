@@ -20,7 +20,7 @@ class Abstract(models.Model):
 class Annotator(models.Model):
     username = models.TextField(max_length=25)
     last_entry_date = models.DateTimeField()
-
+    #TODO: Implement password field (salt hash, etc)
     def __unicode__(self):
         return self.username
 
@@ -38,5 +38,6 @@ class Matches(models.Model):
     annotator = models.ForeignKey(Annotator)
     match_type = models.ForeignKey(MatchTypes)
     text_matched = models.TextField(max_length=50)
+    #TODO: move to length/offset model Ben used for MechTurk XML
     start_match = models.IntegerField()
     end_match = models.IntegerField()

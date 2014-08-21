@@ -26,7 +26,8 @@ Design Principles used:
 
 
 Status of development (8/20/2014):
-    Landing page receives user, navigates to single (random) abstract display
+    Landing page receives user, navigates to single (random) abstract display with input form
 
 Next steps:
+    Baseline UI functionality on abstract display (for user input)
     Take text input from user and store it in database
