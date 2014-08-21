@@ -18,9 +18,11 @@ class Abstract(models.Model):
 
 #users
 class Annotator(models.Model):
-    username = models.TextField(max_length=25)
-    last_entry_date = models.DateTimeField()
     #TODO: Implement password field (salt hash, etc)
+    #TODO: Once login is implememted, disallow blank/null for last_entry_date
+    username = models.TextField(max_length=25)
+    last_entry_date = models.DateTimeField(null=True, blank=True)
+
     def __unicode__(self):
         return self.username
 
@@ -33,11 +35,11 @@ class MatchTypes(models.Model):
         return self.type_name
 
 
-#what we are collecting
+#Each match is recorded separately, with match counts (for abstract-disease-location) gathered by query
 class Matches(models.Model):
+    abstract = models.ForeignKey(Abstract)
     annotator = models.ForeignKey(Annotator)
-    match_type = models.ForeignKey(MatchTypes)
+    #match_type = models.ForeignKey(MatchTypes)#future functionality
     text_matched = models.TextField(max_length=50)
-    #TODO: move to length/offset model Ben used for MechTurk XML
-    start_match = models.IntegerField()
-    end_match = models.IntegerField()
+    match_length = models.IntegerField()
+    match_offset = models.IntegerField()

@@ -1,6 +1,15 @@
 textarea {
-    line-height: 2;
-    height: 150px;
-    width: 100%;
+    line-height: 20;
+    height: 500px;
+    width: 300px;
+    color: green;
 
+}
+
+table {
+    border-width: 5px;
+}
+
+h1 {
+    color: blueviolet;
 }

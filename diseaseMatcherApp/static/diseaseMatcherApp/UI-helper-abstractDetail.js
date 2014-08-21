@@ -2,29 +2,47 @@
  * Created by Doug on 8/20/2014.
  */
 
-//NOT LOVING THIS SOLUTION
-//TODO: Replace this approach with jquery, bootstrap, or angular.js
+//NOT LOVING THIS SOLUTION - Textarea is a poor display object, interface is unappealing
 
-userInputTextbox = document.getElementById('userInput');
-resultsTextarea = document.getElementById('inputSoFar');
-form = document.getElementById('detailForm');
+$(document).ready(function() {
 
-userInputTextbox.addEventListener('keypress', function(e) {
+    inputBox = $('#userInput');
+    resultsBox = $('#inputSoFar');
 
-    var key = e.which || e.keyCode;
-    if (key == 45) {
-        resultsTextarea.text += userInputTextbox.text;
-        userInputTextbox.text = "";
-    }
+    /*just testing
+    $('#userInput').blur(function () {
+        $(this).css("background-color", "#337733");
+    });
+    */
 
+
+    inputBox.focus();
+    resultsBox.css('background-color', '#eeeeee');
+    resultsBox.css('pointer-events', 'none');
+    inputBox.keypress(movetext);
+    //$('#userInput').click(move_text())
+
+//End document.ready call
 });
 
-//This is not working.  Also, deeply inelegant solution
-form.addEventListener('keypress', function(e) {
+    function movetext(e) {
+        //alert(e.keyCode);
 
-    var key = e.which || e.keyCode;
-    if (key == 13) {
-        return false
+        /**/
+        if (e.keyCode == 45 || e.keyCode == 13) {
+           // alert('I got in here');
+            resultsBox.css('background-color', 'yellow');
+            inputText = inputBox.val();
+           // alert(inputText);
+            textareaText = resultsBox.val();
+            resultsBox.val(textareaText + inputText + "\n");
+            inputBox.val('');
+            return false;
+        }
+
+
     }
 
-});
+
+
+

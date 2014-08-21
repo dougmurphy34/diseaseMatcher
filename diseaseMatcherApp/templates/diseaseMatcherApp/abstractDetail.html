@@ -3,31 +3,53 @@
 
 <head lang="en">
     <meta charset="UTF-8">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <title>{{ abstract.title }}</title>
 
     {% load staticfiles %}
+    <!--TODO: Not picking up styles.css.  Why? It locates the file, but does not implement. -->
     <script type="text/css" src="{% static 'diseaseMatcherApp/styles.css' %}"></script>
     <script src="{% static 'diseaseMatcherApp/UI-helper-abstractDetail.js' %}"></script>
 
 </head>
+
 <body>
 
+    {{ abstract.id }} : {{ abstract.abstract_id }}<br>
+    <h1>{{ abstract.title }}</h1><br>
 
-{{ abstract.id }} : {{ abstract.abstract_id }}<br>
-{{ abstract.title }}<br>
+    {{ abstract.abstract_text }}
+    <hr>
+    <form action="{% url 'diseaseMatcherApp:processMatches' %}" method="post" id="detailForm">
+    {% csrf_token %}
+    <!-- TODO: Pretty up this layout -->
 
-{{ abstract.abstract_text }}
+    <!-- find next-get answer to tables; maybe Bootstrap grid -->
+        <table>
+            <tr>
+                <td>
+                   <label for="userInput">Type disease names here:</label><br>
+                      <input type="text" id="userInput" name="userInput"><br>
+                        <span style="font-style:italic">(press enter to submit each answer)</span>
+                </td>
+                <td style="width:100px"></td>
+                <td>
+                    <label for="inputSoFar">You have entered:</label><br>
+                    <textarea id="inputSoFar" name="inputSoFar"></textarea>
 
-<form action="{% url 'diseaseMatcherApp:processMatches' %}" method="post" id="detailForm">
-{% csrf_token %}
-<!-- TODO: Build this form -->
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p><input type="submit" value="Done"></p>
+                </td>
+            </tr>
 
-    <input type="text" id="userInput">
-    <textarea id="inputSoFar"></textarea>
+        </table>
 
-    <p><input type="submit" value="Done"></p>
+        <input type="hidden" id="abstract_pk" name="abstract_pk" value="{{ abstract.id }}">
 
-</form>
+    </form>
 
 </body>
 </html>

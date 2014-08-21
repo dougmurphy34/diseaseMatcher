@@ -1,6 +1,6 @@
 Objective: Develop a citizen science game, based on ESP/Google Image Labeler model, to identify disease names in the text of biomedical research abstracts.
 
-Features: User login/profiles, player vs. AI if no active opponent, time pressure, document storage and display, results storage.
+Features: User login/profiles, player vs. AI, time pressure, document storage and display, results storage.
 
 Models: Artigo.org - successor to ESP
         Cyclonecenter.org and others at zooniverse.org
@@ -8,6 +8,7 @@ Models: Artigo.org - successor to ESP
 Tools used:     django 1.6.5 web framework (lab standard, personal preference for python over java)
 		        MariaDB 10 (more feature rich than mySQL, easier administration than PostgreSQL)
 		        Python 2.7
+		        jQuery 1.11.1
 	            VirtualEnvWrapper (Windows port):
 		           https://pypi.python.org/pypi/virtualenvwrapper-win
 	            Pycharm Enterprise
@@ -19,7 +20,7 @@ Tools used:     django 1.6.5 web framework (lab standard, personal preference fo
 	                (confirmed, South does not and will not support MariaDB http://south.aeracode.org/ticket/1309)
 
 Design Principles used:
-    test-driven development
+    Unit testing (but not true test-driven development)
     MVC model as implemented by django
     Loose coupling
     Agile Development (Frequent functional builds)
@@ -27,7 +28,7 @@ Design Principles used:
 
 Status of development (8/20/2014):
     Landing page receives user, navigates to single (random) abstract display with input form
+    Baseline UI functionality on abstract display (for user input)
 
 Next steps:
-    Baseline UI functionality on abstract display (for user input)
-    Take text input from user and store it in database
+    Store user input in database
