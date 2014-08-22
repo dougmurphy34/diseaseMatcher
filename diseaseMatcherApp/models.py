@@ -20,16 +20,20 @@ class Abstract(models.Model):
         #search self.abstract_text for diseaseString
         #return the first (all) locations of a match, or -1 if no match
         match = re.search(diseaseString, self.abstract_text)
+        match2 = re.search(diseaseString, self.title)
 
+        #TODO: This returns terrible data - the offset could be from the title or from the text, it's not recorded anywhere
         if match:
             return match.start()
+        elif match2:
+            return match2.start()
         else:
             return -1
 
 #users
 class Annotator(models.Model):
     #TODO: Implement password field (salt hash, etc)
-    #TODO: Once login is implemented, disallow blank/null for last_entry_date
+    #TODO: Remove last_entry_date
     username = models.TextField(max_length=25)
     last_entry_date = models.DateTimeField(null=True, blank=True)
 
