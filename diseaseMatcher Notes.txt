@@ -28,12 +28,14 @@ Design Principles used:
 
 Status of development (8/22/2014):
     Landing page receives user, navigates to single (random) abstract display with input form.
-    User can enter text (disease matches) for that abstract.
+    User can enter text (disease matches) for that abstract until 30 seconds passes, or they click "Done".
     Results are checked for accuracy, offset is calculated, results are stored in the database on submission.
     User is given opportunity to play again.
 
 Next steps:
-    Timer.
+    Take matches on title, in addition to text.
+    Comment out offset.
+    First mouse-only version.
     Better tests, especially for views.process_matches.
 
 

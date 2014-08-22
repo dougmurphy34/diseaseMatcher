@@ -26,7 +26,7 @@
     {% csrf_token %}
     <!-- TODO: Pretty up this layout -->
 
-    <!-- find next-get answer to tables; maybe Bootstrap grid -->
+    <!-- find next-gen answer to tables; maybe Bootstrap grid -->
         <table>
             <tr>
                 <td>
@@ -39,6 +39,11 @@
                     <label for="inputSoFar">You have entered:</label><br>
                     <textarea id="inputSoFar" name="inputSoFar" tabindex="-1"></textarea>
 
+                </td>
+            </tr>
+           <!----> <tr>
+                <td>
+                    <span id="secondsLeft" name="secondsLeft"></span> seconds left.
                 </td>
             </tr>
             <tr>

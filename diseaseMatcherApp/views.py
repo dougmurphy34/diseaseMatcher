@@ -48,19 +48,15 @@ def process_matches(request):
         #TODO: Better error handling for this
         return HttpResponse("Whoops!  Error.  I will handle this better later.")
 
-    #TODO: Don't accept words that aren't in abstract
-
-    x = 0
-
     annotator_pk = Annotator.objects.get(pk=1)  #placeholder.  Implement login system, then populate.  REQUIRES FAKE USER AFTER DB WIPE!
     abstract_pk = Abstract.objects.get(pk=which_abstract)
-    #offset = 1#placeholder
 
     for answer in answers:
         clean_answer = answer.strip()
         offset = abstract_pk.match_location(clean_answer)
         if offset != -1:
             if len(clean_answer) > 0:
+                #TODO: Create client feedback in real time for answers - or, move to highlight-the-disease model
                 match = Matches.objects.create(abstract=abstract_pk, annotator=annotator_pk, text_matched=clean_answer, match_length=len(clean_answer), match_offset=offset)
                 match.save()
 
