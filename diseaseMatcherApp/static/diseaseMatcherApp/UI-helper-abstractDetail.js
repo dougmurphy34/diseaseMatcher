@@ -1,5 +1,6 @@
 /**
  * Created by Doug on 8/20/2014.
+ * This file contains helper functions for the template diseaseMatcherApp/abstractDetail.html
  */
 
 //NOT LOVING THIS SOLUTION - Textarea is a poor display object, interface is unappealing

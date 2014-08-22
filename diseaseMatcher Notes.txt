@@ -26,11 +26,17 @@ Design Principles used:
     Agile Development (Frequent functional builds)
 
 
-Status of development (8/21/2014):
+Status of development (8/22/2014):
     Landing page receives user, navigates to single (random) abstract display with input form.
-    User can enter text (disease matches) for that abstract, and results are stored in the database on submission.
+    User can enter text (disease matches) for that abstract.
+    Results are checked for accuracy, offset is calculated, results are stored in the database on submission.
     User is given opportunity to play again.
 
 Next steps:
-    Error checking and tests for database submissions.
-    Confirm entries are in abstract text, and calculate offset.
+    Timer.
+    Better tests, especially for views.process_matches.
+
+
+Future direction:
+    Replace typed-in-the-disease interface with highlight-the-text interface.  (Branch git?)
+        Use window.getSelection().  See: http://stackoverflow.com/questions/4652734/return-html-from-a-user-selected-text/4652824#4652824

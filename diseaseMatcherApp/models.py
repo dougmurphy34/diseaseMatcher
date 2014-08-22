@@ -1,4 +1,5 @@
 from django.db import models
+import re
 import datetime
 from django.utils import timezone
 
@@ -15,6 +16,15 @@ class Abstract(models.Model):
     def __unicode__(self):
         return self.title
 
+    def match_location(self, diseaseString):
+        #search self.abstract_text for diseaseString
+        #return the first (all) locations of a match, or -1 if no match
+        match = re.search(diseaseString, self.abstract_text)
+
+        if match:
+            return match.start()
+        else:
+            return -1
 
 #users
 class Annotator(models.Model):

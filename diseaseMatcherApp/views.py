@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
-from models import Abstract
 from django.template import loader, context, RequestContext
 from django.views.generic import detail
 from django.core.urlresolvers import reverse
@@ -55,14 +54,18 @@ def process_matches(request):
 
     annotator_pk = Annotator.objects.get(pk=1)  #placeholder.  Implement login system, then populate.  REQUIRES FAKE USER AFTER DB WIPE!
     abstract_pk = Abstract.objects.get(pk=which_abstract)
-    offset = 1#placeholder
+    #offset = 1#placeholder
 
     for answer in answers:
-        #I will need: abstract pk, annotator pk, answer
         clean_answer = answer.strip()
-        if len(clean_answer) > 0:
-            match = Matches.objects.create(abstract=abstract_pk, annotator=annotator_pk, text_matched=clean_answer, match_length=len(clean_answer), match_offset=offset)
-            match.save()
+        offset = abstract_pk.match_location(clean_answer)
+        if offset != -1:
+            if len(clean_answer) > 0:
+                match = Matches.objects.create(abstract=abstract_pk, annotator=annotator_pk, text_matched=clean_answer, match_length=len(clean_answer), match_offset=offset)
+                match.save()
+
+    #to find csrfmiddlewaretoken for implementation testing
+    #return HttpResponse(request.POST.get('csrfmiddlewaretoken'))
 
     return HttpResponseRedirect(reverse('diseaseMatcherApp:playAgain'))
 
