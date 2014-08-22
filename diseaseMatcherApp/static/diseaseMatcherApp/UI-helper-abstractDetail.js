@@ -17,19 +17,17 @@ $(document).ready(function() {
 });
 
     function movetext(e) {
-        //alert(e.keyCode);
+        //If user presses "Enter" - keyCode 13 - move the typed text to the textarea, then clear the input box
 
-        /*TODO: prevent user from tabbing into textarea and editing it*/
         if (e.keyCode == 13) {
-           // alert('I got in here');
-            resultsBox.css('background-color', 'yellow');
+            //For Testing: resultsBox.css('background-color', 'yellow');
             inputText = inputBox.val();
-           // alert(inputText);
             textareaText = resultsBox.val();
             resultsBox.val(textareaText + inputText + "\n");
             inputBox.val('');
             return false;
         }
+
 
 
     }
