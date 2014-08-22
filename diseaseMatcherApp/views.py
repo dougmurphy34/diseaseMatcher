@@ -17,40 +17,55 @@ def home_page(request):
     template = loader.get_template('diseaseMatcherApp/index.html')
 
     #pick a random abstract; is this the right place to be doing this?
-    rnd = random.randint(1,500)#TODO: index to # of choices in database
+    abstract_count = Abstract.objects.all().count()
+    rnd = random.randint(1, abstract_count)
     context = RequestContext(request,{'abstract_choice':rnd})
 
     return HttpResponse(template.render(context))
+
+
+def play_again(request):
+    template = loader.get_template('diseaseMatcherApp/playAgain.html')
+
+    #Should this page be a modular version of the home page?
+    #Maybe this becomes a post-login and post-game "get started" page that also shows recent activity,
+    #   fulfilling the role of visually rewarding the player for completion
+    abstract_count = Abstract.objects.all().count()
+    rnd = random.randint(1, abstract_count)
+    context = RequestContext(request,{'abstract_choice':rnd})
+
+    return HttpResponse(template.render(context))
+
 
 def process_matches(request):
     #TODO: Build test for process_matches
 
     #List of all words entered, in a space-delimited string
     try:
-        answerString = request.POST.get('inputSoFar')
-        answers = answerString.split()
+        answer_string = request.POST.get('inputSoFar')
+        answers = answer_string.split('\n')
         which_abstract = request.POST.get('abstract_pk')
     except:
         #TODO: Better error handling for this
         return HttpResponse("Whoops!  Error.  I will handle this better later.")
 
-    #TODO: Handle multi-word answers
     #TODO: Don't accept words that aren't in abstract
 
     x = 0
 
-    annotator_pk = Annotator.objects.get(pk=1)#placeholder.  Implement login system, then populate.  REQUIRES FAKE USER AFTER DB WIPE!
-    abstract_pk = Abstract.objects.get(pk=which_abstract)#placeholder.  Pass this in invisible field in form?
+    annotator_pk = Annotator.objects.get(pk=1)  #placeholder.  Implement login system, then populate.  REQUIRES FAKE USER AFTER DB WIPE!
+    abstract_pk = Abstract.objects.get(pk=which_abstract)
     offset = 1#placeholder
 
     for answer in answers:
         #I will need: abstract pk, annotator pk, answer
-        x += 1 #for testing
-        match = Matches.objects.create(abstract=abstract_pk, annotator=annotator_pk, text_matched=answer, match_length=len(answer), match_offset=offset)
-        match.save()
+        clean_answer = answer.strip()
+        if len(clean_answer) > 0:
+            match = Matches.objects.create(abstract=abstract_pk, annotator=annotator_pk, text_matched=clean_answer, match_length=len(clean_answer), match_offset=offset)
+            match.save()
 
-    return HttpResponse(answerString + ", " + str(x))
-    #return HttpResponseRedirect(reverse('diseaseMatcherApp:homePage'))#TODO: Point this at a "Thank you, play again?" page
+    return HttpResponseRedirect(reverse('diseaseMatcherApp:playAgain'))
+
 
 class AbstractListView(generic.ListView):
     #All abstracts in the DB in one big list - for testing, not part of the app

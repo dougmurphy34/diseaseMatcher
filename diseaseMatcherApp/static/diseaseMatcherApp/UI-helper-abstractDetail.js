@@ -8,19 +8,10 @@ $(document).ready(function() {
 
     inputBox = $('#userInput');
     resultsBox = $('#inputSoFar');
-
-    /*just testing
-    $('#userInput').blur(function () {
-        $(this).css("background-color", "#337733");
-    });
-    */
-
-
     inputBox.focus();
     resultsBox.css('background-color', '#eeeeee');
     resultsBox.css('pointer-events', 'none');
     inputBox.keypress(movetext);
-    //$('#userInput').click(move_text())
 
 //End document.ready call
 });
@@ -28,8 +19,8 @@ $(document).ready(function() {
     function movetext(e) {
         //alert(e.keyCode);
 
-        /**/
-        if (e.keyCode == 45 || e.keyCode == 13) {
+        /*TODO: prevent user from tabbing into textarea and editing it*/
+        if (e.keyCode == 13) {
            // alert('I got in here');
             resultsBox.css('background-color', 'yellow');
             inputText = inputBox.val();

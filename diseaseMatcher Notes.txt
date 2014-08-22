@@ -26,10 +26,11 @@ Design Principles used:
     Agile Development (Frequent functional builds)
 
 
-Status of development (8/20/2014):
-    Landing page receives user, navigates to single (random) abstract display with input form
+Status of development (8/21/2014):
+    Landing page receives user, navigates to single (random) abstract display with input form.
     User can enter text (disease matches) for that abstract, and results are stored in the database on submission.
+    User is given opportunity to play again.
 
 Next steps:
-    Post-submission navigation.
     Error checking and tests for database submissions.
+    Confirm entries are in abstract text, and calculate offset.
