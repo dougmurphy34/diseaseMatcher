@@ -11,6 +11,7 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^diseaseMatcher/', include('diseaseMatcherApp.urls', namespace='diseaseMatcherApp')),
-    url(r'^$', views.home_page, name='homePage')
+    url(r'^$', views.home_page, name='homePage'),
+    url(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'diseaseMatcherApp/login.html'}),
 
 )

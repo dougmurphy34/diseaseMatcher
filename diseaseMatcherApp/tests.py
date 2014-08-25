@@ -1,12 +1,15 @@
+
 from django.test import TestCase
 from django.core.urlresolvers import reverse, resolve
 from diseaseMatcherApp.views import home_page
-from diseaseMatcherApp.models import Abstract, Annotator, Matches
+from diseaseMatcherApp.models import Abstract, Matches
 from django.utils import timezone
+from django.contrib.auth.models import User
 #Turn this on when I start integration tests:
 #from django.test.client import Client
 
 """
+
 Core testing principle:
 for every class and standalone method of your application there should exist a unit test,
 and for every view or page in your application there should exist an integration test.
@@ -27,8 +30,10 @@ def create_abstract(abstract_id, title, text):
 def create_match(abstract, annotator, text, length, offset):
     return Matches.objects.create(abstract=abstract, annotator=annotator, text_matched=text,match_length=length, match_offset=offset)
 
+
 def create_annotator(username):
-    return Annotator.objects.create(username=username, last_entry_date=timezone.now())
+    return User.objects.create(username=username, password='fun')
+
 
 class HomePageTest(TestCase):
     def test_root_url_resolves_to_home_page_view(self):
@@ -59,12 +64,13 @@ class AbstractDetailTests(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_post_one_disease_entered(self):
-        #TODO: This test is throwing a 405.  I need to learn something about POSTS in django (doesn't appear to be a csrf problem)
+        #TODO: This test throws a 405.  Research POSTS in django (doesn't appear to be a csrf problem)
         an_abstract = create_abstract(44,'My abstract title','My abstract text')
         an_annotator = create_annotator('Josephus')
         resp = self.client.post('/diseaseMatcher/224/detail/', {'userInput': '', 'inputSoFar': "Gout", 'abstract_pk': an_abstract.pk, 'csrfmiddlewaretoken': 'p4kklc5RDt1ngTcCgERNEofAcvqeSSh9'})
         #self.assertEqual(resp.status_code, 302)  ##code 302 is a redirect
         #self.assertTrue(resp.POST)
+
 
 class PlayAgainPageTest(TestCase):
     def confirm_url_resolves(self):

@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 import re
 import datetime
 from django.utils import timezone
@@ -30,16 +31,17 @@ class Abstract(models.Model):
         else:
             return -1
 
-#users
+#Removing Annotator in favor of built-in Users model
+'''
 class Annotator(models.Model):
     #TODO: Implement password field (salt hash, etc)
     #TODO: Remove last_entry_date
     username = models.TextField(max_length=25)
-    last_entry_date = models.DateTimeField(null=True, blank=True)
+    password = models.
 
     def __unicode__(self):
         return self.username
-
+'''
 
 #Lookup table.  Current options: modifier, specific, class, composite
 class MatchTypes(models.Model):
@@ -52,7 +54,7 @@ class MatchTypes(models.Model):
 #Each match is recorded separately, with match counts (for abstract-disease-location) gathered by query
 class Matches(models.Model):
     abstract = models.ForeignKey(Abstract)
-    annotator = models.ForeignKey(Annotator)
+    annotator = models.ForeignKey(User)
     #match_type = models.ForeignKey(MatchTypes)#future functionality
     text_matched = models.TextField(max_length=50)
     match_length = models.IntegerField()

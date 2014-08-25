@@ -5,7 +5,7 @@ from django.template import loader, context, RequestContext
 from django.views.generic import detail
 from django.core.urlresolvers import reverse
 import random
-from diseaseMatcherApp.models import Matches, Abstract, Annotator
+from diseaseMatcherApp.models import Matches, Abstract
 
 # Create your views here.
 

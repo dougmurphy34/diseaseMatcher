@@ -33,8 +33,9 @@ Status of development (8/22/2014):
     User is given opportunity to play again.
 
 Next steps:
-    User management
+    User management - urls, vars in settings, register.html, login.html, @login_required decorator
     Record time (how long into the game) each disease was entered.
+    implement {% extends "base.html" %} format
 
 Future direction:
     Replace typed-in-the-disease interface with highlight-the-text interface.  (Branch git?)

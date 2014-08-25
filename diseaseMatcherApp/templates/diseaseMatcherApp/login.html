@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+{% if forms.errors %}
+
+    <P>Your username and password didn't match.  Try again.</P>
+
+{% endif %}
+
+<form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+    {% csrf_token %}
+
+    Please log in to play Disease Matcher.
+
+    <table>
+        <tr>
+            <td>
+                {{ form.username.label_tag }}
+            </td>
+            <td>
+                {{ form.username }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ form.password.label_tag }}
+            </td>
+            <td>
+                {{ form.password }}
+            </td>
+        </tr>
+    </table>
+
+    <input type="submit" value="Login">
+    <input type="hidden" name="next" value="{{ next }}"
+</form>
+
+
+
+</body>
+</html>
