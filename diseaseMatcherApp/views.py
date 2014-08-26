@@ -6,23 +6,43 @@ from django.views.generic import detail
 from django.core.urlresolvers import reverse
 import random
 from diseaseMatcherApp.models import Matches, Abstract
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 # Create your views here.
 
 
+@login_required
 def home_page(request):
-    #TODO: implement login
     #create a welcome page
     template = loader.get_template('diseaseMatcherApp/index.html')
+
+    user = request.user
 
     #pick a random abstract; is this the right place to be doing this?
     abstract_count = Abstract.objects.all().count()
     rnd = random.randint(1, abstract_count)
-    context = RequestContext(request,{'abstract_choice':rnd})
+    context = RequestContext(request, {'abstract_choice': rnd, 'user': user})
 
     return HttpResponse(template.render(context))
 
 
+def start_registration(request):
+
+    template = loader.get_template('diseaseMatcherApp/register.html')
+    context = RequestContext(request)
+
+    return HttpResponse(template.render(context))
+
+@login_required
+def logout_view(request):
+    logout(request)
+
+    return HttpResponseRedirect(reverse('login'))
+
+@login_required
 def play_again(request):
     template = loader.get_template('diseaseMatcherApp/playAgain.html')
 
@@ -31,11 +51,43 @@ def play_again(request):
     #   fulfilling the role of visually rewarding the player for completion
     abstract_count = Abstract.objects.all().count()
     rnd = random.randint(1, abstract_count)
-    context = RequestContext(request,{'abstract_choice':rnd})
+    user = request.user
+    context = RequestContext(request,{'abstract_choice': rnd, 'user': user})
 
     return HttpResponse(template.render(context))
 
 
+def process_registration(request):
+    #See if registration already exists.  If yes + correct PW, login + index.html.  If yes + wrong PW, back to register
+    username = request.POST['username']
+    password = request.POST['password']
+
+    user = authenticate(username=username, password=password)
+
+    if user is not None:
+        if user.is_active:
+            login(request, user)
+            return HttpResponseRedirect(reverse('homePage'))
+        else:
+            messages.success(request, "you're a user, but you have been disabled.")
+            return HttpResponseRedirect(reverse('registration'))
+    else:
+        #If username isn't taken, create user and login
+        try:
+            new_user = User.objects.create_user(username=username, password=password)
+            messages.success(request, "You created user" + str(new_user))
+        except:
+            messages.error(request, "Failed on create new user.  Username is probably taken, try another.")
+            return HttpResponseRedirect(reverse('registration'))
+
+        try:
+            login(request, new_user)
+        except:
+            messages.error(request, "Login failed after (possibly) creating user")
+
+        return HttpResponseRedirect(reverse('homePage'))
+
+@login_required
 def process_matches(request):
     #TODO: Build test for process_matches
 
@@ -48,7 +100,7 @@ def process_matches(request):
         #TODO: Better error handling for this
         return HttpResponse("Whoops!  Error.  I will handle this better later.")
 
-    annotator_pk = Annotator.objects.get(pk=1)  #placeholder.  Implement login system, then populate.  REQUIRES FAKE USER AFTER DB WIPE!
+    annotator_pk = User.objects.get(pk=1)
     abstract_pk = Abstract.objects.get(pk=which_abstract)
 
     for answer in answers:

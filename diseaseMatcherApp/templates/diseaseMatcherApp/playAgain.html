@@ -6,9 +6,11 @@
 </head>
 <body>
 
-<h1>You helped science. Thanks for playing!</h1>
+<h1>You helped science{% if user %}, {{ user }}{% endif %}. Thanks for playing!</h1>
 
 <a href="{% url 'diseaseMatcherApp:abstractDetail' abstract_choice %}">Play again?</a>
+
+<a href="{% url 'logout' %}">Log Out</a>
 
 </body>
 </html>

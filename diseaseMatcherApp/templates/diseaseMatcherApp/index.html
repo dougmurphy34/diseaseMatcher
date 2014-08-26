@@ -1,7 +1,17 @@
-<h1>Welcome to Disease Matcher!  Have fun.</h1>
+<h1>Welcome to Disease Matcher!
+    {% if user %}
+       Have fun, {{ user }}.
+    {% else %}
+        Have fun.
+    {% endif %}
+    </h1>
+
+
 
 {% if abstract_choice %}
     <a href="{% url 'diseaseMatcherApp:abstractDetail' abstract_choice%}">Check out this abstract.</a>
 {% else %}
     There was no abstract_choice that I could find.
 {%  endif %}
+
+<a href="{% url 'logout' %}">Log Out</a>

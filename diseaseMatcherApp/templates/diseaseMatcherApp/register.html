@@ -6,10 +6,39 @@
 </head>
 <body>
 
+{% if messages %}
+<ul class="messages">
+  {% for message in messages %}
+  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+
 Register for Disease Matcher, and then you can start playing.
 
-<form method="POST" action="index.html">
-    <!-- handle this post - create user and annotator, log dude in. -->
+<form method="post" action="{% url 'process_registration' %}">
+    {% csrf_token %}
+
+    <table>
+        <tr>
+            <td>
+                <label for="username">Username</label>
+            </td>
+            <td>
+                <input type="text" name="username">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="password">Password</label>
+            </td>
+            <td>
+                <input type="password" name="password">
+            </td>
+        </tr>
+    </table>
+
+    <input type="submit" value="Register">
 </form>
 
 </body>

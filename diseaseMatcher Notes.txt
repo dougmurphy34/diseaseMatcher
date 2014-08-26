@@ -26,17 +26,20 @@ Design Principles used:
     Agile Development (Frequent functional builds)
 
 
-Status of development (8/22/2014):
+Status of development (8/25/2014):
+    If user is not logged in, they are walked through a login/registration process.
     Landing page receives user, navigates to single (random) abstract display with input form.
     User can enter text (disease matches) for that abstract until 30 seconds passes, or they click "Done".
     Results are checked for accuracy vs. title and text, offset is calculated, results are stored in the database on submission.
-    User is given opportunity to play again.
+    User is given opportunity to play again or log out.
 
 Next steps:
-    User management - urls, vars in settings, register.html, login.html, @login_required decorator
     Record time (how long into the game) each disease was entered.
-    implement {% extends "base.html" %} format
+    Record all matches in text via offset (not just first), and distinguish title matches from text matches.
 
 Future direction:
-    Replace typed-in-the-disease interface with highlight-the-text interface.  (Branch git?)
+    Build a pretty GUI - branding, images, better instructions to the user, better feedback.
+    Create illusion of a "partner" playing with you (AI)
+    Replace type-in-the-disease interface with highlight-the-text interface.  (Branch git?)
         Use window.getSelection().  See: http://stackoverflow.com/questions/4652734/return-html-from-a-user-selected-text/4652824#4652824
+    User profile module - show user what they have contributed via points, achievements, etc.

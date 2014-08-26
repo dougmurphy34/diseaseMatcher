@@ -6,16 +6,25 @@
 </head>
 <body>
 
-{% if forms.errors %}
+{% if form.errors %}
 
-    <P>Your username and password didn't match.  Try again.</P>
+    {%   for field, errors in form.errors.items %}
+        {% for error in errors %}
+            {{ error }}
+        {% endfor %}
+    {% endfor %}
 
+{% else %}
+    Please log in to play Disease Matcher.
 {% endif %}
+
+Don't have a login?  Then <a href="{% url 'registration' %}">register.</a>
 
 <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
     {% csrf_token %}
 
-    Please log in to play Disease Matcher.
+<br>
+
 
     <table>
         <tr>
