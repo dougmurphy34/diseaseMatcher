@@ -5,7 +5,7 @@ from django.template import loader, context, RequestContext
 from django.views.generic import detail
 from django.core.urlresolvers import reverse
 import random
-from diseaseMatcherApp.models import Matches, Abstract
+from diseaseMatcherApp.models import Matches, Abstract, MatchLocations
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -106,10 +106,16 @@ def process_matches(request):
     for answer in answers:
         clean_answer = answer.strip()
         offset = abstract_pk.match_location(clean_answer)
-        if offset != -1:
+        this_match_time = 99  #placeholder  TODO: record match time
+
+        if offset[0] != -1:
+            this_match_location = MatchLocations.objects.get(pk=offset[1])
             if len(clean_answer) > 0:
                 #TODO: Create client feedback in real time for answers - or, move to highlight-the-disease model
-                match = Matches.objects.create(abstract=abstract_pk, annotator=annotator_pk, text_matched=clean_answer, match_length=len(clean_answer), match_offset=offset)
+                match = Matches.objects.create(
+                    abstract=abstract_pk, annotator=annotator_pk, text_matched=clean_answer,
+                    match_length=len(clean_answer), match_offset=offset[0], match_location=this_match_location,
+                    match_time=this_match_time)
                 match.save()
 
     #to find csrfmiddlewaretoken for implementation testing

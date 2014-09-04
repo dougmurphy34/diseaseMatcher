@@ -3,7 +3,7 @@
  * This file contains helper functions for the template diseaseMatcherApp/abstractDetail.html
  */
 
-//NOT LOVING THIS SOLUTION - Textarea is a poor display object, interface is unappealing
+//TODO: NOT LOVING THIS SOLUTION - Textarea is a poor display object, interface is unappealing
 
 $(document).ready(function() {
 
@@ -14,15 +14,14 @@ $(document).ready(function() {
     resultsBox.css('background-color', '#eeeeee');
     resultsBox.css('pointer-events', 'none');
     inputBox.keypress(movetext);
-    secondsLeft.html(30);//works
+    secondsLeft.html(30);
     startCountdown(secondsLeft);
 
 //End document.ready call
 });
 
     function startCountdown(whatsLeft) {
-   /*  */   //vars in document.ready are not in scope here
-        //alert($('#secondsLeft'));//does not work
+        //vars in document.ready are not in scope here
 
         var doUpdate = function() {
             var count = parseInt(secondsLeft.html());

@@ -34,8 +34,9 @@ Status of development (8/25/2014):
     User is given opportunity to play again or log out.
 
 Next steps:
+    Create test for saving a match.
+    Record all matches in text via offset (not just first).
     Record time (how long into the game) each disease was entered.
-    Record all matches in text via offset (not just first), and distinguish title matches from text matches.
 
 Future direction:
     Build a pretty GUI - branding, images, better instructions to the user, better feedback.
@@ -43,3 +44,12 @@ Future direction:
     Replace type-in-the-disease interface with highlight-the-text interface.  (Branch git?)
         Use window.getSelection().  See: http://stackoverflow.com/questions/4652734/return-html-from-a-user-selected-text/4652824#4652824
     User profile module - show user what they have contributed via points, achievements, etc.
+
+Software Design questions:
+    Type text vs. highlight vs. both
+    Match types - implement?  What distinction is needed?  User input, system calculated?
+
+Product Design questions:
+    Visual goals, branding, color schemes and logos.
+    User data to be gathered.
+    Deployment - where, when.

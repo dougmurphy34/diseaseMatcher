@@ -4,8 +4,6 @@ import re
 import datetime
 from django.utils import timezone
 
-# Create your models here.
-
 
 #Raw data to be classified
 class Abstract(models.Model):
@@ -19,17 +17,19 @@ class Abstract(models.Model):
 
     def match_location(self, diseaseString):
         #search self.abstract_text for diseaseString
-        #return the first (all) locations of a match, or -1 if no match
+        #return the (currently) first (should be all) locations of a match, or -1 if no match
+        #NEW RETURN FORMAT: {[titleOrText, offset],[titleorText2, offset2],etc.}
+        #Title Match = "1", Abstract Text Match = "2"
         match = re.search(diseaseString, self.abstract_text)
         match2 = re.search(diseaseString, self.title)
 
-        #TODO: This returns terrible data - the offset could be from the title or from the text, it's not recorded anywhere
+        #TODO: This returns terrible data - offset could be from the title or from the text, it's not recorded anywhere
         if match:
-            return match.start()
+            return [match.start(), 2]
         elif match2:
-            return match2.start()
+            return [match2.start(), 1]
         else:
-            return -1
+            return [-1,-1]
 
 #Removing Annotator in favor of built-in Users model
 '''
@@ -43,12 +43,18 @@ class Annotator(models.Model):
         return self.username
 '''
 
-#Lookup table.  Current options: modifier, specific, class, composite
+
+#Lookup table.  Not yet implemented.  Current options: modifier, specific, class, composite
 class MatchTypes(models.Model):
     type_name = models.TextField(max_length=15)
 
     def __unicode__(self):
         return self.type_name
+
+
+#Lookup table.  Describes which field had the text match.  Current options: Title, Abstract Text.
+class MatchLocations(models.Model):
+    location = models.TextField(max_length=25)
 
 
 #Each match is recorded separately, with match counts (for abstract-disease-location) gathered by query
@@ -59,3 +65,5 @@ class Matches(models.Model):
     text_matched = models.TextField(max_length=50)
     match_length = models.IntegerField()
     match_offset = models.IntegerField()
+    match_location = models.ForeignKey(MatchLocations)
+    match_time = models.IntegerField()  #How many seconds into the game did the user make the match?
