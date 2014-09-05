@@ -2,7 +2,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse, resolve
 from diseaseMatcherApp.views import home_page
-from diseaseMatcherApp.models import Abstract, Matches
+from diseaseMatcherApp.models import Abstract, Matches, MatchLocations
 from django.utils import timezone
 from django.contrib.auth.models import User
 #Turn this on when I start integration tests:
@@ -27,8 +27,9 @@ def create_abstract(abstract_id, title, text):
     return Abstract.objects.create(abstract_id=abstract_id, title=title, abstract_text=text, pub_date=timezone.now())
 
 
-def create_match(abstract, annotator, text, length, offset):
-    return Matches.objects.create(abstract=abstract, annotator=annotator, text_matched=text,match_length=length, match_offset=offset)
+def create_match(abstract, annotator, text, length, offset, location, time):
+    return Matches.objects.create(abstract=abstract, annotator=annotator, text_matched=text, match_length=length,
+                                  match_offset=offset, match_location=location, match_time=time)
 
 
 def create_annotator(username):
@@ -77,3 +78,35 @@ class PlayAgainPageTest(TestCase):
         resp = self.client.get('/playAgain/')
         self.assertEqual(resp.status_code, 200)
         self.assertTrue('abstract_choice' in resp.context)
+
+
+class ProcessMatchesTest(TestCase):
+    def create_and_save_match_good_data(self):
+        abstract = create_abstract(44, "Temporary Abstract", "Lots of fun text.")
+        match_text = "superDisease"
+        annotator = create_annotator("myTestUser")
+        length = 13
+        offset = 73
+        location = MatchLocations.object.get(pk=2)
+        time = 6
+        this_match = create_match(abstract, annotator, match_text, length, offset, location, time)
+        this_match.save()
+
+        self.assertEqual(this_match.match_text, "phantasmagoria")  #"superDisease"
+
+    #TODO: test a failed match creation (ie, test data validation)
+
+    def process_one_match_in_title(self):
+        #create a user and an abstract
+        this_abstract = create_abstract(1, "The ultimate disease abstract",
+                        "There are some people who have cancer, and some who have diphtheria.")
+        this_abstract.save()
+        this_annotator = create_annotator("Joe")
+        this_annotator.save()
+
+        resp = self.client.post('/diseaseMatcher/process_matches',{'inputSoFar': 'cancer', 'abstract_pk': 1})
+        self.assertEqual(resp.status_code, 999)
+        self.assertTrue(resp.POST)
+        self.assertTrue(1 == 2)  #This is passing, which is ridiculous.  What's going on here?
+        self.assertContains(resp, "Godzilla")
+

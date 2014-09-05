@@ -17,6 +17,15 @@ $(document).ready(function() {
     secondsLeft.html(30);
     startCountdown(secondsLeft);
 
+    //prevent multiple submissions of the form
+    //this was a problem with the auto-submit when processing the POST took > 1 second
+    $("form").submit(function() {
+        $(this).submit(function() {
+            return false;
+        });
+        return true;
+    });
+
 //End document.ready call
 });
 

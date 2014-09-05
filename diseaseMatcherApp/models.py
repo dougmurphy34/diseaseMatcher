@@ -17,19 +17,26 @@ class Abstract(models.Model):
 
     def match_location(self, diseaseString):
         #search self.abstract_text for diseaseString
-        #return the (currently) first (should be all) locations of a match, or -1 if no match
-        #NEW RETURN FORMAT: {[titleOrText, offset],[titleorText2, offset2],etc.}
+        #return all locations of a match, or -1 if no match
+        #NEW RETURN FORMAT: [[titleOrText, offset],[titleOrText2, offset2],etc.]
         #Title Match = "1", Abstract Text Match = "2"
-        match = re.search(diseaseString, self.abstract_text)
-        match2 = re.search(diseaseString, self.title)
 
-        #TODO: This returns terrible data - offset could be from the title or from the text, it's not recorded anywhere
-        if match:
-            return [match.start(), 2]
-        elif match2:
-            return [match2.start(), 1]
+        #TODO: This code now slow.  Speed it up.
+        text_matches = re.finditer(diseaseString, self.abstract_text)
+        title_matches = re.finditer(diseaseString, self.title)
+
+        list_of_results = []
+
+        for match in text_matches:
+            list_of_results += [[match.start(), 2]]
+
+        for match in title_matches:
+            list_of_results += [[match.start(), 1]]
+
+        if len(list_of_results) > 0:
+            return list_of_results
         else:
-            return [-1,-1]
+            return [[-1, -1]]
 
 #Removing Annotator in favor of built-in Users model
 '''

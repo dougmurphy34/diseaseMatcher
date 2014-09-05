@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from django.template import loader, context, RequestContext
-from django.views.generic import detail
 from django.core.urlresolvers import reverse
 import random
 from diseaseMatcherApp.models import Matches, Abstract, MatchLocations
@@ -89,7 +88,7 @@ def process_registration(request):
 
 @login_required
 def process_matches(request):
-    #TODO: Build test for process_matches
+    #TODO: Build better test for process_matches
 
     #List of all words entered, in a space-delimited string
     try:
@@ -100,23 +99,28 @@ def process_matches(request):
         #TODO: Better error handling for this
         return HttpResponse("Whoops!  Error.  I will handle this better later.")
 
-    annotator_pk = User.objects.get(pk=1)
+    annotator_pk = User.objects.get(pk=1)  #placeholder TODO: Hard coded annotator.  Get currently logged in user.
     abstract_pk = Abstract.objects.get(pk=which_abstract)
 
     for answer in answers:
         clean_answer = answer.strip()
-        offset = abstract_pk.match_location(clean_answer)
+
         this_match_time = 99  #placeholder  TODO: record match time
 
-        if offset[0] != -1:
-            this_match_location = MatchLocations.objects.get(pk=offset[1])
-            if len(clean_answer) > 0:
-                #TODO: Create client feedback in real time for answers - or, move to highlight-the-disease model
-                match = Matches.objects.create(
-                    abstract=abstract_pk, annotator=annotator_pk, text_matched=clean_answer,
-                    match_length=len(clean_answer), match_offset=offset[0], match_location=this_match_location,
-                    match_time=this_match_time)
-                match.save()
+        offset_list = abstract_pk.match_location(clean_answer)
+
+        for offset in offset_list:
+            #format of offset variable will be [HowDeepInTextAppears, MatchLocationAs0or1].  No match = [-1,-1]
+            #return HttpResponse(offset)
+            if offset[0] != -1:
+                this_match_location = MatchLocations.objects.get(pk=offset[1])
+                if len(clean_answer) > 0:
+                    #TODO: Create client feedback in real time for answers - or, move to highlight-the-disease model
+                    match = Matches.objects.create(
+                        abstract=abstract_pk, annotator=annotator_pk, text_matched=clean_answer,
+                        match_length=len(clean_answer), match_offset=offset[0], match_location=this_match_location,
+                        match_time=this_match_time)
+                    match.save()
 
     #to find csrfmiddlewaretoken for implementation testing
     #return HttpResponse(request.POST.get('csrfmiddlewaretoken'))

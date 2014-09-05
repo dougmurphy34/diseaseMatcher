@@ -9,8 +9,6 @@ Tools used:     django 1.6.5 web framework (lab standard, personal preference fo
 		        MariaDB 10 (more feature rich than mySQL, easier administration than PostgreSQL)
 		        Python 2.7
 		        jQuery 1.11.1
-	            VirtualEnvWrapper (Windows port):
-		           https://pypi.python.org/pypi/virtualenvwrapper-win
 	            Pycharm Enterprise
 	            HeidiSQL
 	            MySQL-python 1.2.5
@@ -31,12 +29,11 @@ Status of development (9/4/2014):
     Landing page receives user, navigates to single (random) abstract display with input form.
     User can enter text (disease matches) for that abstract until 30 seconds passes, or they click "Done".
     Results are checked for accuracy vs. title and text, location and offset are calculated,
-        results are stored in the database on submission.
+        all matching results are stored in the database on submission.
     User is given opportunity to play again or log out.
 
 Next steps:
-    Create test for saving a match.
-    Record all matches in text via offset (not just first).
+    Record proper annotator from User model.
     Record time (how long into the game) each disease was entered.
 
 Future direction:
