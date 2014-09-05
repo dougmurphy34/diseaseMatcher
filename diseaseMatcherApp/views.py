@@ -99,7 +99,7 @@ def process_matches(request):
         #TODO: Better error handling for this
         return HttpResponse("Whoops!  Error.  I will handle this better later.")
 
-    annotator_pk = User.objects.get(pk=1)  #placeholder TODO: Hard coded annotator.  Get currently logged in user.
+    annotator_pk = User.objects.get(pk=request.user.id)
     abstract_pk = Abstract.objects.get(pk=which_abstract)
 
     for answer in answers:

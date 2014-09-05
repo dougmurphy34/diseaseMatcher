@@ -33,8 +33,8 @@ Status of development (9/4/2014):
     User is given opportunity to play again or log out.
 
 Next steps:
-    Record proper annotator from User model.
     Record time (how long into the game) each disease was entered.
+    Improve display of answers that user sees (ie, not a tiny textarea)
 
 Future direction:
     Build a pretty GUI - branding, images, better instructions to the user, better feedback.
@@ -46,6 +46,7 @@ Future direction:
 Software Design questions:
     Type text vs. highlight vs. both
     Match types - implement?  What distinction is needed?  User input, system calculated?
+    Reports?  How do we want to get the data out and present it?  Who will use the data, and how?
 
 Product Design questions:
     Visual goals, branding, color schemes and logos.
