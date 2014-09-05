@@ -10,9 +10,9 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 -- Dumping data for table diseasematcherdb.diseasematcherapp_matchlocations: ~2 rows (approximately)
-DELETE FROM `diseasematcherapp_matchlocations`;
+DELETE FROM `diseasematcherapp_matchlocationslookup`;
 /*!40000 ALTER TABLE `diseasematcherapp_matchlocations` DISABLE KEYS */;
-INSERT INTO `diseasematcherapp_matchlocations` (`id`, `location`) VALUES
+INSERT INTO `diseasematcherapp_matchlocationslookup` (`id`, `location`) VALUES
 	(1, 'Title'),
 	(2, 'Abstract Text');
 /*!40000 ALTER TABLE `diseasematcherapp_matchlocations` ENABLE KEYS */;

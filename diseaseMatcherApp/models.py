@@ -16,9 +16,9 @@ class Abstract(models.Model):
         return self.title
 
     def match_location(self, diseaseString):
-        #search self.abstract_text for diseaseString
+        #search self.abstract_text and self.title for diseaseString
         #return all locations of a match, or -1 if no match
-        #NEW RETURN FORMAT: [[titleOrText, offset],[titleOrText2, offset2],etc.]
+        #RETURN FORMAT: [[titleOrText, offset],[titleOrText2, offset2],etc.]
         #Title Match = "1", Abstract Text Match = "2"
 
         #TODO: This code now slow.  Speed it up.
@@ -38,21 +38,8 @@ class Abstract(models.Model):
         else:
             return [[-1, -1]]
 
-#Removing Annotator in favor of built-in Users model
-'''
-class Annotator(models.Model):
-    #TODO: Implement password field (salt hash, etc)
-    #TODO: Remove last_entry_date
-    username = models.TextField(max_length=25)
-    password = models.
-
-    def __unicode__(self):
-        return self.username
-'''
-
-
 #Lookup table.  Not yet implemented.  Current options: modifier, specific, class, composite
-class MatchTypes(models.Model):
+class MatchTypesLookup(models.Model):
     type_name = models.TextField(max_length=15)
 
     def __unicode__(self):
@@ -60,7 +47,7 @@ class MatchTypes(models.Model):
 
 
 #Lookup table.  Describes which field had the text match.  Current options: Title, Abstract Text.
-class MatchLocations(models.Model):
+class MatchLocationsLookup(models.Model):
     location = models.TextField(max_length=25)
 
 
@@ -68,9 +55,13 @@ class MatchLocations(models.Model):
 class Matches(models.Model):
     abstract = models.ForeignKey(Abstract)
     annotator = models.ForeignKey(User)
-    #match_type = models.ForeignKey(MatchTypes)#future functionality
+    #match_type = models.ForeignKey(MatchTypes)  #future functionality
     text_matched = models.TextField(max_length=50)
     match_length = models.IntegerField()
-    match_offset = models.IntegerField()
-    match_location = models.ForeignKey(MatchLocations)
     match_time = models.IntegerField()  #How many seconds into the game did the user make the match?
+
+
+class MatchLocations(models.Model):
+    match = models.ForeignKey(Matches)
+    match_location = models.ForeignKey(MatchLocationsLookup)
+    match_offset = models.IntegerField()
