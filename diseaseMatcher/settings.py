@@ -89,3 +89,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+
+#this is needed for sstatic template tag
+STATIC_ROOT = '/diseaseMatcherApp/'

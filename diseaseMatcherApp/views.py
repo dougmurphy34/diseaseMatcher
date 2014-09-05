@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+import json
 
 # Create your views here.
 
@@ -74,7 +75,7 @@ def process_registration(request):
         #If username isn't taken, create user and login
         try:
             new_user = User.objects.create_user(username=username, password=password)
-            messages.success(request, "You created user" + str(new_user))
+            messages.success(request, "You created user " + str(new_user))
         except:
             messages.error(request, "Failed on create new user.  Username is probably taken, try another.")
             return HttpResponseRedirect(reverse('registration'))
@@ -101,20 +102,21 @@ def process_matches(request):
 
     annotator_pk = User.objects.get(pk=request.user.id)
     abstract_pk = Abstract.objects.get(pk=which_abstract)
+    answer_time_dict = json.loads(request.POST.get('userMatches'))
 
     for answer in answers:
         clean_answer = answer.strip()
 
-        this_match_time = 99  #placeholder  TODO: record match time
+        if len(clean_answer) > 0:
+            this_match_time = answer_time_dict[clean_answer]
 
-        offset_list = abstract_pk.match_location(clean_answer)
+            offset_list = abstract_pk.match_location(clean_answer)
 
-        for offset in offset_list:
-            #format of offset variable will be [HowDeepInTextAppears, MatchLocationAs0or1].  No match = [-1,-1]
-            #return HttpResponse(offset)
-            if offset[0] != -1:
-                this_match_location = MatchLocations.objects.get(pk=offset[1])
-                if len(clean_answer) > 0:
+            for offset in offset_list:
+                #format of offset variable will be [HowDeepInTextAppears, MatchLocationAs0or1].  No match = [-1,-1]
+                if offset[0] != -1:
+                    this_match_location = MatchLocations.objects.get(pk=offset[1])
+
                     #TODO: Create client feedback in real time for answers - or, move to highlight-the-disease model
                     match = Matches.objects.create(
                         abstract=abstract_pk, annotator=annotator_pk, text_matched=clean_answer,
