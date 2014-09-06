@@ -33,7 +33,7 @@ Status of development (9/5/2014):
     User is given opportunity to play again or log out.
 
 Next steps:
-    Revise matches model - move offset and location to separate table (to prevent data duplication of match and time in matches table).
+    Fix registration flow (auto-login of new user is failing).
     Better automated testing.
     Improve user experience.
 

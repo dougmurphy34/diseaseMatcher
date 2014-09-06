@@ -76,6 +76,7 @@ def process_registration(request):
         try:
             new_user = User.objects.create_user(username=username, password=password)
             messages.success(request, "You created user " + str(new_user))
+            new_user.save()
         except:
             messages.error(request, "Failed on create new user.  Username is probably taken, try another.")
             return HttpResponseRedirect(reverse('registration'))
@@ -111,6 +112,7 @@ def process_matches(request):
         if len(clean_answer) > 0:  #Possibly unnecessary test
             this_match_time = answer_time_dict[clean_answer]
 
+            #TODO: Prevent duplicate matches
             offset_list = abstract_pk.match_location(clean_answer)
 
             if offset_list[0][0] != -1:
