@@ -42,6 +42,7 @@ def logout_view(request):
 
     return HttpResponseRedirect(reverse('login'))
 
+
 @login_required
 def play_again(request):
     template = loader.get_template('diseaseMatcherApp/playAgain.html')
@@ -75,16 +76,19 @@ def process_registration(request):
         #If username isn't taken, create user and login
         try:
             new_user = User.objects.create_user(username=username, password=password)
-            messages.success(request, "You created user " + str(new_user))
             new_user.save()
-        except:
+            messages.success(request, "You created user " + str(new_user))
+
+        except:  #TODO: specify exception classes
             messages.error(request, "Failed on create new user.  Username is probably taken, try another.")
             return HttpResponseRedirect(reverse('registration'))
 
         try:
-            login(request, new_user)
+            #Now that the user has been created, we can authenticate with the user/pass we used to create them
+            user_trying_again = authenticate(username=username, password=password)
+            login(request, user_trying_again)
         except:
-            messages.error(request, "Login failed after (possibly) creating user")
+            messages.error(request, "Login failed after (possibly) creating user " + str(new_user))
 
         return HttpResponseRedirect(reverse('homePage'))
 
@@ -148,7 +152,6 @@ class AbstractListView(generic.ListView):
 
     def get_queryset(self):
         return Abstract.objects.all()
-
 
 class AbstractDetailView(generic.DetailView):
     #What the user will see while they search for disease names
