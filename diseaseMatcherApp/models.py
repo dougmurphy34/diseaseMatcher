@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import re
-import datetime
+from datetime import datetime
 from django.utils import timezone
 
 
@@ -10,7 +10,7 @@ class Abstract(models.Model):
     abstract_id = models.IntegerField()
     title = models.TextField(max_length=500)
     abstract_text = models.TextField(max_length=5000)
-    pub_date = models.DateTimeField()
+    pub_date = models.DateTimeField(default=datetime.now)
 
     def __unicode__(self):
         return self.title
@@ -38,12 +38,13 @@ class Abstract(models.Model):
         else:
             return [[-1, -1]]
 
-#Lookup table.  Not yet implemented.  Current options: modifier, specific, class, composite
+'''Lookup table.  Not yet implemented.  Current options: modifier, specific, class, composite
 class MatchTypesLookup(models.Model):
     type_name = models.TextField(max_length=15)
 
     def __unicode__(self):
         return self.type_name
+'''
 
 
 #Lookup table.  Describes which field had the text match.  Current options: Title, Abstract Text.
