@@ -18,13 +18,13 @@ Tools used:     django 1.6.5 web framework (lab standard, personal preference fo
 	                (confirmed, South does not and will not support MariaDB http://south.aeracode.org/ticket/1309)
 
 Design Principles used:
-    Unit testing (but not true test-driven development)
+    Unit and integration testing using unittest with frameworks
     MVC model as implemented by django
     Loose coupling
     Agile Development (Frequent functional builds)
 
 
-Status of development (9/8/2014):
+Status of development (9/9/2014):
     If user is not logged in, they are walked through a login/registration process.  New registrations automatically logged in.
     Landing page receives user, navigates to single (random) abstract display with input form.
     User can enter text (disease matches) for that abstract until 30 seconds passes, or they click "Done".
