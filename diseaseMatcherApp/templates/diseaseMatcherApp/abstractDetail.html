@@ -17,10 +17,12 @@
 
 <body>
 
-    {{ abstract.id }} : {{ abstract.abstract_id }}<br>
-    <h1>{{ abstract.title }}</h1><br>
+    <span class="instructions">Highlight disease names with your mouse, or type them in the box below and press Enter.</span>
 
-    {{ abstract.abstract_text }}
+    <div id="abstractTextDiv">
+        <h1>{{ abstract.title }}</h1><br>
+        {{ abstract.abstract_text }}
+    </div>
     <hr>
     <form action="{% url 'diseaseMatcherApp:processMatches' %}" method="post" id="detailForm">
     {% csrf_token %}

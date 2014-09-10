@@ -113,7 +113,7 @@ def process_matches(request):
     for answer in answers:
         clean_answer = answer.strip()
 
-        if len(clean_answer) > 0:  #Possibly unnecessary test
+        if 51 > len(clean_answer) > 0:
             this_match_time = answer_time_dict[clean_answer]
 
             #TODO: Prevent duplicate matches

@@ -13,3 +13,10 @@ table {
 h1 {
     color: blueviolet;
 }
+
+.instructions {
+    color: lightblue;
+    font-family: Verdana;
+    font-size: large;
+    font-weight: bold;
+}
