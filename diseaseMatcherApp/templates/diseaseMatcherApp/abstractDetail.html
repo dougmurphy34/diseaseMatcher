@@ -1,22 +1,17 @@
-<!DOCTYPE html>
-<html>
+{% extends 'diseaseMatcherApp/base.html' %}
 
-<head lang="en">
-    <meta charset="UTF-8">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <title>{{ abstract.title }}</title>
+{% block title %}
+    {{ abstract.title }}
+{% endblock %}
 
+{% block extrascripts %}
     {% load sstatic %}
-    {% load staticfiles %}
-    <link rel="stylesheet" type="text/css" href="{% sstatic 'diseaseMatcherApp/styles.css' %}">
+    {% load staticfiles %} <!-- TODO: Test without this, may not be necessary -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="{% sstatic 'diseaseMatcherApp/UI-helper-abstractDetail.js' %}"></script>
+{% endblock %}
 
-    <!-- TODO: This would work better with an interface that allowed the user to highlight diseases with the mouse, then submit.-->
-    <!-- This would find length/offset, deal with spelling and punctuation mismatches, and be a better experience for the user-->
-</head>
-
-<body>
-
+{% block content %}
     <span class="instructions">Highlight disease names with your mouse, or type them in the box below and press Enter.</span>
 
     <div id="abstractTextDiv">
@@ -60,6 +55,4 @@
         <input type="hidden" id="userMatches" name="userMatches" value="">
 
     </form>
-
-</body>
-</html>
+{% endblock %}

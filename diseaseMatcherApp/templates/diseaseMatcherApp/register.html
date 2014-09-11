@@ -1,45 +1,43 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+{% extends 'diseaseMatcherApp/base.html' %}
 
-{% if messages %}
-<ul class="messages">
-  {% for message in messages %}
-  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-  {% endfor %}
-</ul>
-{% endif %}
+{% block title %}
+    Register
+{% endblock %}
 
-<h1>Register for Disease Matcher, and then you can start playing.</h1>
+{% block content %}
 
-<form method="post" action="{% url 'process_registration' %}">
-    {% csrf_token %}
+    {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
 
-    <table>
-        <tr>
-            <td>
-                <label for="username">Username</label>
-            </td>
-            <td>
-                <input type="text" name="username">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="password">Password</label>
-            </td>
-            <td>
-                <input type="password" name="password">
-            </td>
-        </tr>
-    </table>
+    <h1>Register for Disease Matcher, and then you can start playing.</h1>
 
-    <input type="submit" value="Register">
-</form>
+    <form method="post" action="{% url 'process_registration' %}">
+        {% csrf_token %}
 
-</body>
-</html>
+        <table>
+            <tr>
+                <td>
+                    <label for="username">Username</label>
+                </td>
+                <td>
+                    <input type="text" name="username">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="password">Password</label>
+                </td>
+                <td>
+                    <input type="password" name="password">
+                </td>
+            </tr>
+        </table>
+
+        <input type="submit" value="Register">
+    </form>
+{% endblock %}

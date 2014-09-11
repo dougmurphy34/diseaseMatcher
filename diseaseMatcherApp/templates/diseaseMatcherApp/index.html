@@ -1,3 +1,6 @@
+{%  extends "diseaseMatcherApp/base.html" %}
+
+{% block content %}
 <h1>Welcome to Disease Matcher!
     {% if user %}
        Have fun, {{ user }}.
@@ -15,3 +18,5 @@
 {%  endif %}
 
 <a href="{% url 'logout' %}">Log Out</a>
+
+{% endblock %}

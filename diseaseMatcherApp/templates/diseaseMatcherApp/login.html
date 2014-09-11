@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>Disease Matcher</title>
-    {% load sstatic %}
-    <link rel="stylesheet" type="text/css" href="{% sstatic 'diseaseMatcherApp/styles.css' %}"
-</head>
-<body>
+{% extends 'diseaseMatcherApp/base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
 
 <span class="instructions">
 
@@ -52,8 +46,4 @@ Don't have a login?  Then <a href="{% url 'registration' %}">register</a>.
     <input type="submit" value="Login">
     <input type="hidden" name="next" value="{{ next }}"
 </form>
-
-
-
-</body>
-</html>
+{% endblock %}

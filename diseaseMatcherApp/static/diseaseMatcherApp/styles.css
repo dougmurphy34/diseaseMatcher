@@ -1,7 +1,7 @@
 textarea {
     line-height: 1;
     width: 200px;
-    height: 300px;
+    height: 200px;
     color: green;
 
 }
@@ -14,9 +14,14 @@ h1 {
     color: blueviolet;
 }
 
+.banner {
+    font-size: xx-large;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 .instructions {
-    color: lightblue;
-    font-family: Verdana;
+    color: darkblue;
+    font-family: "Courier New";
     font-size: large;
     font-weight: bold;
 }
