@@ -24,27 +24,26 @@ Design Principles used:
     Agile Development (Frequent functional builds)
 
 
-Status of development (9/9/2014):
+Status of development (9/10/2014):
     If user is not logged in, they are walked through a login/registration process.  New registrations automatically logged in.
     Landing page receives user, navigates to single (random) abstract display with input form.
-    User can enter text (disease matches) for that abstract until 30 seconds passes, or they click "Done".
+    User can mouse-highlight or type text (disease matches) for that abstract until 30 seconds passes, or they click "Done".
     Results are cleaned of spaces and tabs and checked for accuracy vs. title and text.  Location and offset are calculated.
     Database records: match text, length, location (title or text), offset, annotator, abstract, time into game answer was entered.
     User is given opportunity to play again or log out.
 
 Next steps:
-    Better automated testing.
     Improve user experience.
+    Simple user profile page
+    Client-side feedback on typed results
+    Even better automated testing.
 
 Future direction:
     Build a pretty GUI - branding, images, better instructions to the user, better feedback.
     Create illusion of a "partner" playing with you (AI)
-    Replace type-in-the-disease interface with highlight-the-text interface.  (Branch git?)
-        Use window.getSelection().  See: http://stackoverflow.com/questions/4652734/return-html-from-a-user-selected-text/4652824#4652824
     User profile module - show user what they have contributed via points, achievements, etc.
 
 Software Design questions:
-    Type text vs. highlight vs. both
     Match types - implement?  What distinction is needed?  User input, system calculated?
     Reports?  How do we want to get the data out and present it?  Who will use the data, and how?
 

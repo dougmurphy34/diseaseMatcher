@@ -77,7 +77,6 @@ def process_registration(request):
         try:
             new_user = User.objects.create_user(username=username, password=password)
             new_user.save()
-            messages.success(request, "You created user " + str(new_user))
 
         except:  #TODO: specify exception classes
             messages.error(request, "Failed on create new user.  Username is probably taken, try another.")

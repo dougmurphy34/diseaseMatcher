@@ -64,14 +64,20 @@ class AbstractDetailTests(TestCase):
 
 
     def test_post_one_disease_entered(self):
-        #TODO: This test throws a 405.  Research POSTS in django (doesn't appear to be a csrf problem)
+        #TODO: the server is refusing self.client.post requests in testing, although they work in the app proper.  Why?
         ## ---- Removing login_required from process_matches still gives a 405.
-        ## Removing this from the post (, 'csrfmiddlewaretoken': 'p4kklc5RDt1ngTcCgERNEofAcvqeSSh9') ... did not help
+        ## Removing this from the post (, 'csrfmiddlewaretoken': 'p4kklc5RDt1ngTcCgERNEofAcvqeSSh9')
+                # since django's test web server turns off csrf by default
         an_abstract = Abstract.objects.get(pk=44)
         an_annotator = create_annotator('Josephus')
-        resp = self.client.post('/diseaseMatcher/224/detail/', {'userInput': '', 'userMatches': 'stringOfCrap', 'inputSoFar': "Gout", 'abstract_pk': an_abstract.id, 'csrfmiddlewaretoken': 'p4kklc5RDt1ngTcCgERNEofAcvqeSSh9'})
+        an_annotator.save()
+
+        textContainingJSONMatches = "{'fragile X syndrome': 6, 'FMR1': 18}"
+
+        resp = self.client.post(reverse('diseaseMatcherApp:abstractDetail', kwargs={'pk': 44}),
+                                {'userInput': '', 'userMatches': textContainingJSONMatches, 'inputSoFar': "Gout",
+                                 'abstract_pk': an_abstract.id})
         #self.assertEqual(resp.status_code, 302)  ##code 302 is a redirect
-        #self.assertTrue(resp.POST)  #TODO: 'HttpResponseNotAllowed' object has no attribute 'POST'
 
 
 class LoginTests(TestCase):
@@ -125,13 +131,19 @@ class ProcessMatchesTest(TestCase):
     #TODO: test a failed match creation (ie, test data validation)
 
     def test_process_one_match_in_title(self):
+        #TODO: the server is refusing self.client.post requests in testing, although they work in the app proper.  Why?
+
         #create a user and an abstract
         this_abstract = Abstract.objects.get(pk=5)  #'hypoplasia' in both title and abstract text
         this_annotator = create_annotator("Joe")
         this_annotator.save()
 
-        resp = self.client.post('/diseaseMatcher/process_matches',{'inputSoFar': 'cancer', 'abstract_pk': 1})
-        #self.assertEqual(resp.status_code, 302) #TODO: This is 301.  Find out what that is.
-        #self.assertTrue(resp.POST)  #TODO: This is not the right syntax to do this.  Check other project tests.py.
-        #self.assertContains(resp, "Godzilla")
+        userMatchesJSON = "{'hypoplasia': 8}"
+
+        resp = self.client.post(reverse('diseaseMatcherApp:abstractDetail', kwargs={'pk': this_abstract.id}),
+                                {'inputSoFar': 'hypoplasia', 'abstract_pk': this_abstract.id, 'user.id': this_annotator.id,
+                                 'userMatches': userMatchesJSON})
+        #self.assertEqual(resp.status_code, 302)
+        #self.assertEqual(Matches.objects.get(pk=1).text_matched, 'hypoplasia')
+        #self.assertContains(resp, "again")
 
