@@ -1,0 +1,35 @@
+{% extends 'diseaseMatcherApp/base.html' %}
+
+{% block title %}
+    User Profile
+{% endblock %}
+
+{% block content %}
+
+<h1>User profile for {{ user }}</h1><br>
+
+    You are ranked #{{ rank }} in Disease Matcher! <br>
+
+    {% if abstractsWorkedOn %}
+        You worked on these {{ abstractCount }} abstracts:
+        <table>
+        <tr><td>Matches</td><td>Abstract</td></tr>
+        {% for key, value in abstractsWorkedOn.items %}
+            <tr>
+                <td>
+                   {{ value }}
+                </td>
+                <td>
+                    {{ key }}
+                </td>
+            </tr>
+
+        {% endfor %}
+        </table>
+    {% else %}
+        <br>
+        You haven't worked on any abstracts yet.  Give one a try!
+    {% endif %}
+
+
+{% endblock %}

@@ -11,9 +11,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import json
 
-# Create your views here.
 
-
+# **********VIEWS**********
 @login_required
 def home_page(request):
     #create a welcome page
@@ -21,7 +20,7 @@ def home_page(request):
 
     user = request.user
 
-    #pick a random abstract; is this the right place to be doing this?
+    #pick a random abstract
     abstract_count = Abstract.objects.all().count()
     rnd = random.randint(1, abstract_count)
     context = RequestContext(request, {'abstract_choice': rnd, 'user': user})
@@ -36,6 +35,14 @@ def start_registration(request):
 
     return HttpResponse(template.render(context))
 
+
+class AbstractDetailView(generic.DetailView):
+    #What the user will see while they search for disease names
+    template_name = 'diseaseMatcherApp/abstractDetail.html'
+    context_object_name = 'abstract'
+    model = Abstract
+
+
 @login_required
 def logout_view(request):
     logout(request)
@@ -47,7 +54,7 @@ def logout_view(request):
 def play_again(request):
     template = loader.get_template('diseaseMatcherApp/playAgain.html')
 
-    #Should this page be a modular version of the home page?
+    #TODO: Should this page be a modular version of the home page?
     #Maybe this becomes a post-login and post-game "get started" page that also shows recent activity,
     #   fulfilling the role of visually rewarding the player for completion
     abstract_count = Abstract.objects.all().count()
@@ -57,6 +64,37 @@ def play_again(request):
 
     return HttpResponse(template.render(context))
 
+@login_required
+def user_profile(request):
+    template = loader.get_template('diseaseMatcherApp/userProfile.html')
+    #get count of matches found, and in how many abstracts.  Maybe grid of title + matches?
+    #user ranking (based on # matches, get all users with more matches, ranking = that + 1
+
+    dict_of_work = {}
+
+    this_user = request.user
+    abstracts_worked_on = Matches.objects.filter(annotator_id=this_user.pk).values_list('abstract_id', flat=True).distinct()
+
+    work_count = abstracts_worked_on.count
+
+    my_rank = calculate_annotator_ranking(this_user)
+
+    for abstract in abstracts_worked_on:
+        match_name = Abstract.objects.get(pk=abstract).title
+        match_count = Matches.objects.filter(abstract_id=abstract).count()
+        dict_of_work[match_name] = match_count
+
+    #Neither of these sorts is producing a working dictionary.  Maybe because it's a list of tuples?
+    #sorted_dict_of_work = sorted(dict_of_work.items(), key=lambda x: x[1])
+    #sorted_dict_of_work = sorted(dict_of_work.iteritems(), key=operator.itemgetter(1))
+
+
+    context = RequestContext(request, {'abstractsWorkedOn': dict_of_work, 'abstractCount': work_count, 'rank': my_rank})
+
+    return HttpResponse(template.render(context))
+
+
+#*********TRANSACTIONS************
 
 def process_registration(request):
     #See if registration already exists.  If yes + correct PW, login + index.html.  If yes + wrong PW, back to register
@@ -144,17 +182,22 @@ def process_matches(request):
     return HttpResponseRedirect(reverse('diseaseMatcherApp:playAgain'))
 
 
-class AbstractListView(generic.ListView):
-    #All abstracts in the DB in one big list - for testing, not part of the app
-    template_name = 'diseaseMatcherApp/abstractList.html'
-    context_object_name = 'abstract_list'
+#**********HELPER FUNCTIONS ******************
 
-    def get_queryset(self):
-        return Abstract.objects.all()
+def calculate_annotator_ranking(annotator):
+    #helper function
+    #takes an annotator, returns their rank among all annotators based on number of abstracts reviewed
+    this_user_count = Matches.objects.filter(annotator=annotator).values_list('abstract_id', flat=True).distinct().count()
+    better_users = 0
 
-class AbstractDetailView(generic.DetailView):
-    #What the user will see while they search for disease names
-    template_name = 'diseaseMatcherApp/abstractDetail.html'
-    context_object_name = 'abstract'
-    model = Abstract
+    all_users = User.objects.all()
+
+    for user in all_users:
+        temp_user_count = Matches.objects.filter(annotator=user).values_list('abstract_id', flat=True).distinct().count()
+        if temp_user_count > this_user_count:
+            better_users += 1
+
+    return better_users + 1
+
+
 
