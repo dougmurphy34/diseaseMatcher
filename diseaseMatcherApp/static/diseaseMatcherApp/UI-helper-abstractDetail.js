@@ -5,7 +5,7 @@
 
 //TODO: NOT LOVING THIS SOLUTION - TextArea is a poor display object, interface is unappealing
 
-LENGTH_OF_GAME_IN_SECONDS = 3000;
+LENGTH_OF_GAME_IN_SECONDS = 45;
 
 
 var answerDict = {};
@@ -30,21 +30,18 @@ function startCountdown(whatsLeft) {
 function trim_evil_characters(input_string) {
         //Trims leading and trailing spaces and tabs
         //Leaves behind CRLF, which we need - that's why I didn't use jquery's .trim()
-        //Also removes some punctuation  #TODO: Should remove ['"-]?  Advantage: Asperger's == Aspergers
+        //Also removes some punctuation, but leaves other (ie, so Asperger's is not converted to Aspergers and therefore not matched)
 
-    //TODO: Remove parens as well, these break stuff.  Maybe {}[]()
-    //***These characters pose no problem: , . - / ; ()
-    //***These break things: parentheses and commas when together?  Key error.  See if I can replicate with no back button.
-    //***This string failed to match itself: "gene ( s ) other than BRCA1".  Parens and spaces together?  2 data points say yes.
+        //***These characters pose no problem: , . - / ; ' " ALSO () in pairs
+        //***These break things: uneven parentheses
 
-        //TODO: OH NO!  If I do this, it won't find any matches!!!
-        //TODO: Instead, reject the input and pop up a fadeaway warning about avoiding punctuation?
-        //no_paren_family = input_string.replace(/[(){}\[\]]+/g,"");
+        //Trimming punctuation passes sanitized answers to be matched vs. actual text, so it won't find any matches.  This is usually fine.
+        //TODO: Once client side matching is implemented, reject dangerous input and pop up a fadeaway warning about avoiding punctuation.
+        no_paren_family = input_string.replace(/[(){}\[\]]+/g,"");
         //no_punctuation = no_paren_family.replace(/[\.\?!,]+/g,"");
-        no_leads = input_string.replace(/^[ \t]+/, "");
+        no_leads = no_paren_family.replace(/^[ \t]+/, "");
         no_trails = no_leads.replace(/[ \t]+\r?\n?$/, "");
         //no_double_spaces = no_trails.replace(/\s{2,}g/," ");
-
 
         return no_trails
 }
@@ -56,7 +53,7 @@ function moveText(e) {
 
         inputText = trim_evil_characters(inputBox.val());
 
-        if (typeof answerDict[cleanText] == 'undefined') {//prevent dupes, which would reset time entered to later time
+        if (typeof answerDict[inputText] == 'undefined') {//prevent dupes, which would reset time entered to later time
             textareaText = resultsBox.val();
             timeLeft = secondsLeft.html();
             //record answer and time to our associative array

@@ -150,9 +150,9 @@ def process_matches(request):
         clean_answer = answer.strip()
 
         if 51 > len(clean_answer) > 0:
+            #TODO: handle key error on this (happens when user submits, then hits back button.  Prevent this?)
             this_match_time = answer_time_dict[clean_answer]
 
-            #TODO: Prevent duplicate matches
             offset_list = abstract_pk.match_location(clean_answer)
 
             if offset_list[0][0] != -1:

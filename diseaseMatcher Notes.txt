@@ -24,29 +24,30 @@ Design Principles used:
     Agile Development (Frequent functional builds)
 
 
-Status of development (9/11/2014):
+Status of development (9/13/2014):
     If user is not logged in, they are walked through a login/registration process.  New registrations automatically logged in.
-    Landing page receives user, navigates to single (random) abstract display with input form.
+    Landing page receives user, navigates to single (random but new to user) abstract display with input form.
     User can mouse-highlight or type text (disease matches) for that abstract until 30 seconds passes, or they click "Done".
-    Results are cleaned of spaces and tabs and checked for accuracy vs. title and text.  Location and offset are calculated.
+    Results are cleaned of dupes, spaces, tabs and problematic punctuation.
+    Results are checked for accuracy vs. title and text.  Location and offset are calculated.
     Database records: match text, length, location (title or text), offset, annotator, abstract, time into game answer was entered.
     User is given opportunity to play again or log out.
     User can view play history and ranking on user profile page.
 
 Next steps:
-    Better data validation (punctuation in user data)
     Client-side feedback on typed results
-    Even better automated testing.  (Check 405 comment on StackOverflow)
+    Improve error handling
 
 Future direction:
     Build a pretty GUI - branding, images, better instructions to the user, better feedback.
     Create illusion of a "partner" playing with you (AI)
 
 Software Design questions:
-    Match types - implement?  What distinction is needed?  User input, system calculated?
-    Reports?  How do we want to get the data out and present it?  Who will use the data, and how?
+    Should I implement match types (specific, modifier, class, composite)?  What distinction is needed?  Should it be based on user input, or system calculated?
+    What functionality do we want that isn't in this document yet?
 
 Product Design questions:
-    Visual goals, branding, color schemes and logos.
-    User data to be gathered.
-    Deployment - where, when.
+    Are there existing logos or style guidelines I should use on the graphic design of the app?
+    What data needs to be gathered from users?  Name, contact info, level of medical expertise, etc.
+    What reports do we need to pull from all this data we are gathering?  How do we want to get the data out and present it?  Who will use the data, and how?
+    Where will the project be deployed to?  Should we do this now (to a staging server) so the lab can see it?
