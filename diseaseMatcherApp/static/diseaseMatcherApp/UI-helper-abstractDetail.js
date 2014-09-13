@@ -5,7 +5,7 @@
 
 //TODO: NOT LOVING THIS SOLUTION - TextArea is a poor display object, interface is unappealing
 
-LENGTH_OF_GAME_IN_SECONDS = 30;
+LENGTH_OF_GAME_IN_SECONDS = 3000;
 
 
 var answerDict = {};
@@ -27,27 +27,46 @@ function startCountdown(whatsLeft) {
 
 }
 
-function trim_space_tab(input_string) {
+function trim_evil_characters(input_string) {
         //Trims leading and trailing spaces and tabs
         //Leaves behind CRLF, which we need - that's why I didn't use jquery's .trim()
+        //Also removes some punctuation  #TODO: Should remove ['"-]?  Advantage: Asperger's == Aspergers
 
-        noleads = input_string.replace(/^[ \t]+/, "");
-        return noleads.replace(/[ \t]+\r?\n?$/, "")
+    //TODO: Remove parens as well, these break stuff.  Maybe {}[]()
+    //***These characters pose no problem: , . - / ; ()
+    //***These break things: parentheses and commas when together?  Key error.  See if I can replicate with no back button.
+    //***This string failed to match itself: "gene ( s ) other than BRCA1".  Parens and spaces together?  2 data points say yes.
+
+        //TODO: OH NO!  If I do this, it won't find any matches!!!
+        //TODO: Instead, reject the input and pop up a fadeaway warning about avoiding punctuation?
+        //no_paren_family = input_string.replace(/[(){}\[\]]+/g,"");
+        //no_punctuation = no_paren_family.replace(/[\.\?!,]+/g,"");
+        no_leads = input_string.replace(/^[ \t]+/, "");
+        no_trails = no_leads.replace(/[ \t]+\r?\n?$/, "");
+        //no_double_spaces = no_trails.replace(/\s{2,}g/," ");
+
+
+        return no_trails
 }
 
 function moveText(e) {
     //If user presses "Enter" - keyCode 13 - move the typed text to the textArea, then clear the input box
 
     if (e.keyCode == 13) {
-        inputText = trim_space_tab(inputBox.val());
-        textareaText = resultsBox.val();
-        timeLeft = secondsLeft.html();
 
-        //record answer and time to our associative array
-        answerDict[inputText] = LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft);
+        inputText = trim_evil_characters(inputBox.val());
 
-        //Update UI
-        resultsBox.val(textareaText + inputText + "\n");
+        if (typeof answerDict[cleanText] == 'undefined') {//prevent dupes, which would reset time entered to later time
+            textareaText = resultsBox.val();
+            timeLeft = secondsLeft.html();
+            //record answer and time to our associative array
+            answerDict[inputText] = LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft);
+
+            //Update UI
+            resultsBox.val(textareaText + inputText + "\n");
+
+        }
+
         inputBox.val('');
 
         //Prevent form submission - Enter should not submit the form in this app
@@ -61,15 +80,17 @@ function addTextFromMouseUp(textSelection) {
     timeLeft = secondsLeft.html();
 
     //clean up result
-    cleanText = trim_space_tab(textSelection.toString());//Fails
+    cleanText = trim_evil_characters(textSelection.toString());
 
-    //record answer and time to our associative array
-    answerDict[cleanText] = LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft);
+    if (typeof answerDict[cleanText] == 'undefined') {//prevent dupes, which would reset time entered to later time
 
-    //update UI
-    textareaText = resultsBox.val();
-    resultsBox.val(textareaText + cleanText + "\n");
+        //record answer and time to our associative array
+        answerDict[cleanText] = LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft);
 
+        //update UI
+        textareaText = resultsBox.val();
+        resultsBox.val(textareaText + cleanText + "\n");
+    }
 }
 
 

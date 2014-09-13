@@ -34,9 +34,9 @@ Status of development (9/11/2014):
     User can view play history and ranking on user profile page.
 
 Next steps:
-    Better data validation (user entering same text twice, user working on same abstract twice)
+    Better data validation (punctuation in user data)
     Client-side feedback on typed results
-    Even better automated testing.
+    Even better automated testing.  (Check 405 comment on StackOverflow)
 
 Future direction:
     Build a pretty GUI - branding, images, better instructions to the user, better feedback.

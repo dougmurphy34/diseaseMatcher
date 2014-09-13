@@ -20,9 +20,8 @@ def home_page(request):
 
     user = request.user
 
-    #pick a random abstract
-    abstract_count = Abstract.objects.all().count()
-    rnd = random.randint(1, abstract_count)
+    #pick a random abstract that this user hasn't seen before
+    rnd = get_a_fresh_abstract(user)
     context = RequestContext(request, {'abstract_choice': rnd, 'user': user})
 
     return HttpResponse(template.render(context))
@@ -57,9 +56,9 @@ def play_again(request):
     #TODO: Should this page be a modular version of the home page?
     #Maybe this becomes a post-login and post-game "get started" page that also shows recent activity,
     #   fulfilling the role of visually rewarding the player for completion
-    abstract_count = Abstract.objects.all().count()
-    rnd = random.randint(1, abstract_count)
     user = request.user
+    rnd = get_a_fresh_abstract(user)
+
     context = RequestContext(request,{'abstract_choice': rnd, 'user': user})
 
     return HttpResponse(template.render(context))
@@ -146,7 +145,7 @@ def process_matches(request):
     annotator_pk = User.objects.get(pk=request.user.id)
     abstract_pk = Abstract.objects.get(pk=which_abstract)
 
-    #TODO: Create client feedback in real time for answers - or, move to highlight-the-disease model
+    #TODO: Create client feedback in real time for answers
     for answer in answers:
         clean_answer = answer.strip()
 
@@ -198,6 +197,20 @@ def calculate_annotator_ranking(annotator):
             better_users += 1
 
     return better_users + 1
+
+
+def get_a_fresh_abstract(annotator):
+    abstracts_seen = Matches.objects.filter(annotator=annotator).values_list('abstract_id')
+    how_many_abstracts = Abstract.objects.all().count()
+
+    if abstracts_seen == how_many_abstracts:
+        return 0 #TODO: Handle this so that the user gets a "nice job, come back later" message
+
+    while True:
+        random_number = random.randint(1, how_many_abstracts)
+        if random_number not in abstracts_seen:
+            return random_number
+
 
 
 
