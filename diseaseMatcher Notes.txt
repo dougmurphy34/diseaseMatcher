@@ -24,23 +24,25 @@ Design Principles used:
     Agile Development (Frequent functional builds)
 
 
-Status of development (9/13/2014):
+Status of development (9/15/2014):
     If user is not logged in, they are walked through a login/registration process.  New registrations automatically logged in.
     Landing page receives user, navigates to single (random but new to user) abstract display with input form.
     User can mouse-highlight or type text (disease matches) for that abstract until 30 seconds passes, or they click "Done".
+    User entry is rejected on client side if it doesn't match abstract title/text, is too long, or is a duplicate, with an explanatory message.
     Results are cleaned of dupes, spaces, tabs and problematic punctuation.
-    Results are checked for accuracy vs. title and text.  Location and offset are calculated.
+    Results are re-checked for accuracy vs. title and text.  Location and offset are calculated.
     Database records: match text, length, location (title or text), offset, annotator, abstract, time into game answer was entered.
     User is given opportunity to play again or log out.
     User can view play history and ranking on user profile page.
 
 Next steps:
-    Client-side feedback on typed results
-    Improve error handling
+    Table-based (vs. textarea-based) onscreen user results.
+    Incorporate scoring system for matches and rankings.
 
 Future direction:
     Build a pretty GUI - branding, images, better instructions to the user, better feedback.
-    Create illusion of a "partner" playing with you (AI)
+    Create illusion of a "partner" playing with you (AI).
+    Modular layout that supports mobile using CSS media queries.
 
 Software Design questions:
     Should I implement match types (specific, modifier, class, composite)?  What distinction is needed?  Should it be based on user input, or system calculated?

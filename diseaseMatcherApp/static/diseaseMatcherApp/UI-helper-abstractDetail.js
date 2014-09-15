@@ -1,12 +1,22 @@
 /**
  * Created by Doug on 8/20/2014.
- * This file contains helper functions for the template diseaseMatcherApp/abstractDetail.html
+ * This file contains client-side logic for the template diseaseMatcherApp/abstractDetail.html
  */
 
-//TODO: NOT LOVING THIS SOLUTION - TextArea is a poor display object, interface is unappealing
+//TODO: TextArea is a poor display object, change to Table
+//TODO: Fix "double fadeout" message problem
 
-LENGTH_OF_GAME_IN_SECONDS = 45;
+    // PLAN GOES LIKE THIS:
+    // 1) DONE - regex comparison of entered text to title and abstract text.  Disallow (with message) if no match.
+    // 2) Display answers in a list, in black.  -->probably time to change textarea to a table
+    // 3) In request.context, pass a list of all past successful answers (ordered by frequency) to view.
+    // 4) Every 5ish seconds, add the top answer to "AI answers".  (This means max possible answers is LENGTH_OF_GAME_IN_SECONDS / 5)
+    // 5) If an answer is entered by both user and AI, change its color to green.
+    // 6) Update instructions - zero (?) points per you-only answer, 10 points for match-with-AI answer.
+    // 7) Change models.py to reflect new scoring system.  Change user profiles to match new work history and ranking system.
+    // 8) Deal with the few/no answer yet problem: use capitalized words/phrases?  Most common words > 6 chars?
 
+LENGTH_OF_GAME_IN_SECONDS = 300;
 
 var answerDict = {};
 
@@ -37,21 +47,61 @@ function trim_evil_characters(input_string) {
 
         //Trimming punctuation passes sanitized answers to be matched vs. actual text, so it won't find any matches.  This is usually fine.
         //TODO: Once client side matching is implemented, reject dangerous input and pop up a fadeaway warning about avoiding punctuation.
-        no_paren_family = input_string.replace(/[(){}\[\]]+/g,"");
+        var no_paren_family = input_string.replace(/[(){}\[\]]+/g,"");
         //no_punctuation = no_paren_family.replace(/[\.\?!,]+/g,"");
-        no_leads = no_paren_family.replace(/^[ \t]+/, "");
-        no_trails = no_leads.replace(/[ \t]+\r?\n?$/, "");
-        //no_double_spaces = no_trails.replace(/\s{2,}g/," ");
+        var no_leads = no_paren_family.replace(/^[ \t]+/, "");
 
-        return no_trails
+        //no_double_spaces = no_trails.replace(/\s{2,}g/," ");
+        return no_leads.replace(/[ \t]+\r?\n?$/, "");//Save variable declaration of no_trails
+
+}
+
+
+function test_for_matches(userEnteredText) {
+
+    var thisRe = new RegExp(userEnteredText);
+    var abstractString = abstractText.text();
+    var result = abstractString.search(thisRe);
+
+    if (result == -1) {
+        feedback.fadeIn('fast');
+        feedback.text('no Match').css('backgroundColor',"red").fadeOut(1500);
+        return false
+    }
+    else { //TODO: Probably remove this from final version, provides minimal value
+        feedback.fadeIn('fast');
+        feedback.text('Match!').css('backgroundColor',"green").fadeOut(1200);
+        return true
+    }
+}
+
+function test_for_too_long(answerString) {
+    if (answerString.toString().length > 50) {
+        feedback.fadeIn('fast');
+        feedback.text('Answers should be 50 characters or less').css('backgroundColor','red').fadeOut(3000);
+        return true
+    }
+
+    return false
+}
+
+function dupe_message() {
+    feedback.fadeIn('fast');
+    feedback.text('You already entered that one!').css('backgroundColor','red').fadeOut(3000);
+
 }
 
 function moveText(e) {
     //If user presses "Enter" - keyCode 13 - move the typed text to the textArea, then clear the input box
 
-    if (e.keyCode == 13) {
+if (e.keyCode == 13) {
+        if (!test_for_matches(inputBox.val())) {
+            //There's no match; don't take answer, and also reject form submission
+            inputBox.val('');
+            return false
+        }
 
-        inputText = trim_evil_characters(inputBox.val());
+        var inputText = trim_evil_characters(inputBox.val());
 
         if (typeof answerDict[inputText] == 'undefined') {//prevent dupes, which would reset time entered to later time
             textareaText = resultsBox.val();
@@ -62,6 +112,9 @@ function moveText(e) {
             //Update UI
             resultsBox.val(textareaText + inputText + "\n");
 
+        }
+        else {
+            dupe_message()
         }
 
         inputBox.val('');
@@ -74,10 +127,15 @@ function moveText(e) {
 
 function addTextFromMouseUp(textSelection) {
 
-    timeLeft = secondsLeft.html();
+    if (test_for_too_long(textSelection)) {
+            //Too long, don't add.  This is common when a vertical mouse move grabs a whole extra row of text.
+            return false
+        }
+
+    var timeLeft = secondsLeft.html();
 
     //clean up result
-    cleanText = trim_evil_characters(textSelection.toString());
+    var cleanText = trim_evil_characters(textSelection.toString());
 
     if (typeof answerDict[cleanText] == 'undefined') {//prevent dupes, which would reset time entered to later time
 
@@ -85,14 +143,18 @@ function addTextFromMouseUp(textSelection) {
         answerDict[cleanText] = LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft);
 
         //update UI
-        textareaText = resultsBox.val();
+        var textareaText = resultsBox.val();
         resultsBox.val(textareaText + cleanText + "\n");
+    }
+    else {
+        dupe_message()
     }
 }
 
 
 $(document).ready(function() {
 
+    feedback = $('#feedback');
     inputBox = $('#userInput');
     resultsBox = $('#inputSoFar');
     secondsLeft = $('#secondsLeft');

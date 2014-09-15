@@ -19,37 +19,28 @@
         {{ abstract.abstract_text }}
     </div>
     <hr>
-    <form action="{% url 'diseaseMatcherApp:processMatches' %}" method="post" id="detailForm">
+    <form action="{% url 'diseaseMatcherApp:processMatches' %}" method="post" id="detailForm" autocomplete="off">
     {% csrf_token %}
-    <!-- TODO: Pretty up this layout -->
 
-    <!-- find next-gen answer to tables; maybe Bootstrap grid -->
-        <table>
-            <tr>
-                <td>
-                   <label for="userInput">Type disease names here:</label><br>
-                      <input type="text" id="userInput" name="userInput"><br>
-                        <span style="font-style:italic">(press enter to submit each answer)</span>
-                </td>
-                <td style="width:100px"></td>
-                <td>
-                    <label for="inputSoFar">You have entered:</label><br>
-                    <textarea id="inputSoFar" name="inputSoFar" tabindex="-1"></textarea>
+    <!-- TODO: find next-gen answer to tables; maybe Bootstrap grid -->
+        <div id="leftColumn">
+            <div id="topChunk">
+                <label for="userInput" id="textEntryColumnAnchor">Type disease names here:</label>
+                <br>
+                <input type="text" id="userInput" name="userInput" autocomplete="off"><br>
+                <span id="feedback" style="font-style:italic">(press ENTER to submit each answer)</span>
+            </div>
+            <div id="bottomChunk">
+                <label for="submitButton" id="secondsLeft"></label> seconds left.
+                <p><input id="submitButton" type="submit" value="Done"></p>
+            </div>
+        </div>
+        <div id="rightColumn">
+            <label for="inputSoFar">You have entered:</label><br>
+            <textarea id="inputSoFar" name="inputSoFar" tabindex="-1"></textarea>
+        </div>
 
-                </td>
-            </tr>
-           <!----> <tr>
-                <td>
-                    <span id="secondsLeft"></span> seconds left.
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <p><input type="submit" value="Done"></p>
-                </td>
-            </tr>
 
-        </table>
 
         <input type="hidden" id="abstract_pk" name="abstract_pk" value="{{ abstract.id }}">
         <input type="hidden" id="userMatches" name="userMatches" value="">
