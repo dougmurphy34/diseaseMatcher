@@ -37,13 +37,6 @@ class HomePageTest(TestCase):
         self.assertEqual(found.func, home_page)
 
 
-#This page isn't used.  This test can go once tests.py is ready to be checked in
-class AbstractListTests(TestCase):
-    def test_list_view_without_abstracts(self):
-        response = self.client.get(reverse('diseaseMatcherApp:abstractList'))
-        self.assertEqual(response.status_code, 200)
-
-
 class AbstractDetailTests(TestCase):
 
     fixtures = ['diseaseMatcherApp_views_testdata.json']
