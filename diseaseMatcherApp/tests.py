@@ -1,10 +1,12 @@
+from __future__ import absolute_import
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse, resolve
-from diseaseMatcherApp.views import home_page
-from diseaseMatcherApp.models import Abstract, Matches, MatchLocations, MatchLocationsLookup
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+
+from .views import home_page
+from .models import Abstract, Matches, MatchLocations, MatchLocationsLookup
 
 """
 

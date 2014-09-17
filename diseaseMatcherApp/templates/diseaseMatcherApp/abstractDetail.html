@@ -6,7 +6,6 @@
 
 {% block extrascripts %}
     {% load sstatic %}
-    {% load staticfiles %} <!-- TODO: Test without this, may not be necessary -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="{% sstatic 'diseaseMatcherApp/UI-helper-abstractDetail.js' %}"></script>
 {% endblock %}
@@ -24,7 +23,6 @@
     <form action="{% url 'diseaseMatcherApp:processMatches' %}" method="post" id="detailForm" autocomplete="off">
     {% csrf_token %}
 
-    <!-- TODO: find next-gen answer to tables; maybe Bootstrap grid -->
         <div id="leftColumn">
             <div id="topChunk">
                 <label for="userInput" id="textEntryColumnAnchor">Type disease names here:</label>
@@ -40,6 +38,22 @@
         <div id="rightColumn">
             <label for="inputSoFar">You have entered:</label><br>
             <textarea id="inputSoFar" name="inputSoFar" tabindex="-1"></textarea>
+            <table id="answerDisplay">
+                <thead>
+                    <tr>
+                        <th>
+                            Answer
+                        </th>
+                        <th>
+                            Delete?
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="answerBody">
+
+                </tbody>
+
+            </table>
         </div>
 
 

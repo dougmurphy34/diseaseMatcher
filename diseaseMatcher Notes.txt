@@ -42,7 +42,6 @@ Status of development (9/17/2014):
         User can view play history and ranking on user profile page.
 
 Next steps:
-    On highlight, only grab highlighted instance.  (Data is now properly grabbed.  Next step: pass it to process_matches and process separately.)
     Table-based (vs. textarea-based) onscreen user results, including ability to drop a previous answer from list.  (Need a game reason to do this).
     Incorporate scoring system for matches and rankings.
     Additional registration data - age, gender, occupation, purpose for playing, education  (all optional)

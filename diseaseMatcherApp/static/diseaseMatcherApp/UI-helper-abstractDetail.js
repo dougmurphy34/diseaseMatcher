@@ -47,7 +47,7 @@ function trim_evil_characters(input_string) {
         //***These break things: uneven parentheses
 
         //Trimming punctuation passes sanitized answers to be matched vs. actual text, so it won't find any matches.  This is usually fine.
-        //TODO: On rejecting dangerous input and pop up a fadeaway warning about avoiding punctuation. -- mouse matches only
+        //TODO: On rejecting dangerous input pop up a fadeaway warning about avoiding punctuation. -- mouse matches only
         var no_paren_family = input_string.replace(/[(){}\[\]]+/g,"");
         //no_punctuation = no_paren_family.replace(/[\.\?!,]+/g,"");
         var no_leads = no_paren_family.replace(/^[ \t]+/, "");
@@ -112,6 +112,9 @@ function moveText(e) {
 
             //Update UI
             resultsBox.val(textareaText + inputText + "\n");
+            //TODO: NewMethod - USE MORE JQUERY.  http://www.htmlgoodies.com/beyond/css/working_w_tables_using_jquery.html
+            //$('#answerBody').appendChild(document.createElement('tr'))
+
 
         }
         else {

@@ -1,16 +1,18 @@
+from __future__ import absolute_import
+import random
+import json
+
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from django.template import loader, context, RequestContext
 from django.core.urlresolvers import reverse
-import random
-from diseaseMatcherApp.models import Matches, Abstract, MatchLocations, MatchLocationsLookup
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-import json
 
+from .models import Matches, Abstract, MatchLocations, MatchLocationsLookup
 
 # **********VIEWS**********
 @login_required
@@ -44,6 +46,7 @@ class AbstractDetailView(generic.DetailView):
     def a_function(self):
         return 99
 
+
 @login_required
 def logout_view(request):
     logout(request)
@@ -64,6 +67,7 @@ def play_again(request):
     context = RequestContext(request,{'abstract_choice': rnd, 'user': user})
 
     return HttpResponse(template.render(context))
+
 
 @login_required
 def user_profile(request):
@@ -129,6 +133,7 @@ def process_registration(request):
             messages.error(request, "Login failed after (possibly) creating user " + str(new_user))
 
         return HttpResponseRedirect(reverse('homePage'))
+
 
 @login_required
 def process_matches(request):

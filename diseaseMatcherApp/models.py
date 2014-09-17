@@ -1,7 +1,8 @@
-from django.db import models
-from django.contrib.auth.models import User
 import re
 from datetime import datetime
+
+from django.db import models
+from django.contrib.auth.models import User
 from django.utils import timezone
 
 
@@ -21,7 +22,6 @@ class Abstract(models.Model):
         #RETURN FORMAT: [[titleOrText, offset],[titleOrText2, offset2],etc.]
         #Title Match = "1", Abstract Text Match = "2"
 
-        #TODO: This code now slow.  Speed it up.
         text_matches = re.finditer(diseaseString, self.abstract_text)
         title_matches = re.finditer(diseaseString, self.title)
 
@@ -38,14 +38,6 @@ class Abstract(models.Model):
         else:
             return [[-1, -1]]
 
-'''Lookup table.  Not yet implemented.  Current options: modifier, specific, class, composite
-class MatchTypesLookup(models.Model):
-    type_name = models.TextField(max_length=15)
-
-    def __unicode__(self):
-        return self.type_name
-'''
-
 
 #Lookup table.  Describes which field had the text match.  Current options: Title, Abstract Text.
 class MatchLocationsLookup(models.Model):
@@ -54,6 +46,10 @@ class MatchLocationsLookup(models.Model):
 
 #Each match is recorded separately, with match counts (for abstract-disease-location) gathered by query
 class Matches(models.Model):
+
+    def __unicode__(self):
+        return self.text_matched
+
     abstract = models.ForeignKey(Abstract)
     annotator = models.ForeignKey(User)
     #match_type = models.ForeignKey(MatchTypes)  #future functionality
@@ -66,3 +62,24 @@ class MatchLocations(models.Model):
     match = models.ForeignKey(Matches)
     match_location = models.ForeignKey(MatchLocationsLookup)
     match_offset = models.IntegerField()
+
+
+class GenderLookup(models.Model):
+    gender = models.TextField(max_length=6)
+
+
+class EducationLookup(models.Model):
+    education_level = models.TextField(max_length=15)
+
+
+class PurposeForPlayingLookup(models.Model):
+    purpose = models.TextField(max_length=20)
+
+
+class UserDetails(models.Model):
+    #age, gender, occupation, purpose for playing, education  (all optional)
+    age = models.IntegerField(max_length=3)
+    gender = models.ForeignKey(GenderLookup)
+    occupation = models.TextField(max_length=50)
+    purpose_for_playing = models.TextField(max_length=50)
+    education = models.ForeignKey(EducationLookup)
