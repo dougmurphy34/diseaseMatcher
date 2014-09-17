@@ -6,7 +6,21 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 
-#Raw data to be classified
+#ABSTRACT CLASSES
+class TimeStampedModel(models.Model):
+    """
+    An abstract base class model that provides self-updating
+    ''created'' and ''modified'' fields.
+    """
+
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+#Scientific abstracts to be classified
 class Abstract(models.Model):
     abstract_id = models.IntegerField()
     title = models.TextField(max_length=500)
@@ -45,7 +59,7 @@ class MatchLocationsLookup(models.Model):
 
 
 #Each match is recorded separately, with match counts (for abstract-disease-location) gathered by query
-class Matches(models.Model):
+class Matches(TimeStampedModel):
 
     def __unicode__(self):
         return self.text_matched
@@ -58,7 +72,7 @@ class Matches(models.Model):
     match_time = models.IntegerField()  #How many seconds into the game did the user make the match?
 
 
-class MatchLocations(models.Model):
+class MatchLocations(TimeStampedModel):
     match = models.ForeignKey(Matches)
     match_location = models.ForeignKey(MatchLocationsLookup)
     match_offset = models.IntegerField()
@@ -76,7 +90,7 @@ class PurposeForPlayingLookup(models.Model):
     purpose = models.TextField(max_length=20)
 
 
-class UserDetails(models.Model):
+class UserDetails(TimeStampedModel):
     #age, gender, occupation, purpose for playing, education  (all optional)
     age = models.IntegerField(max_length=3)
     gender = models.ForeignKey(GenderLookup)
