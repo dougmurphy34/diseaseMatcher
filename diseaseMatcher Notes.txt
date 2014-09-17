@@ -24,7 +24,7 @@ Design Principles used:
     Agile Development (Frequent functional builds)
 
 
-Status of development (9/15/2014):
+Status of development (9/16/2014):
     If user is not logged in, they are walked through a login/registration process.  New registrations automatically logged in.
     Landing page receives user, navigates to single (random but new to user) abstract display with input form.
     User can mouse-highlight or type text (disease matches) for that abstract until 30 seconds passes, or they click "Done".
@@ -36,20 +36,23 @@ Status of development (9/15/2014):
     User can view play history and ranking on user profile page.
 
 Next steps:
-    Table-based (vs. textarea-based) onscreen user results.
+    On highlight, only grab highlighted instance.  (Data is now properly grabbed.  Next step: pass it to process_matches and process separately.)
+    Table-based (vs. textarea-based) onscreen user results, including ability to drop a previous answer from list.  (Need a game reason to do this).
     Incorporate scoring system for matches and rankings.
+    Additional registration data - age, gender, occupation, purpose for playing, education  (all optional)
 
 Future direction:
-    Build a pretty GUI - branding, images, better instructions to the user, better feedback.
+    Bifurcate game - how many abstracts can you hit a match on in 60 seconds, how many matches in this abstract in 60 seconds.  3 matches to completion?  "Banned" words?
+    Build a pretty GUI - branding, images, better instructions to the user, better feedback.  Borrow some of this from Mark2Cure.org.
     Create illusion of a "partner" playing with you (AI).
     Modular layout that supports mobile using CSS media queries.
 
 Software Design questions:
-    Should I implement match types (specific, modifier, class, composite)?  What distinction is needed?  Should it be based on user input, or system calculated?
     What functionality do we want that isn't in this document yet?
 
 Product Design questions:
-    Are there existing logos or style guidelines I should use on the graphic design of the app?
-    What data needs to be gathered from users?  Name, contact info, level of medical expertise, etc.
     What reports do we need to pull from all this data we are gathering?  How do we want to get the data out and present it?  Who will use the data, and how?
     Where will the project be deployed to?  Should we do this now (to a staging server) so the lab can see it?
+
+Game design questions:
+    Confirm vs. undo on adding answer via mouse selection: http://alistapart.com/article/neveruseawarning

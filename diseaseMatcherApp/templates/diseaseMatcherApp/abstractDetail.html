@@ -14,8 +14,10 @@
 {% block content %}
     <span class="instructions">Highlight disease names with your mouse, or type them in the box below and press Enter.</span>
 
+    <div id="abstractTitleDiv">
+        <h1>{{ abstract.title }}</h1>
+    </div>
     <div id="abstractTextDiv">
-        <h1>{{ abstract.title }}</h1><br>
         {{ abstract.abstract_text }}
     </div>
     <hr>
@@ -43,7 +45,8 @@
 
 
         <input type="hidden" id="abstract_pk" name="abstract_pk" value="{{ abstract.id }}">
-        <input type="hidden" id="userMatches" name="userMatches" value="">
+        <input type="hidden" id="userTypedMatches" name="userTypedMatches" value="">
+        <input type="hidden" id="userHighlightedMatches" name="userHighlightedMatches" value="">
 
     </form>
 {% endblock %}

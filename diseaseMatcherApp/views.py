@@ -41,6 +41,8 @@ class AbstractDetailView(generic.DetailView):
     context_object_name = 'abstract'
     model = Abstract
 
+    def a_function(self):
+        return 99
 
 @login_required
 def logout_view(request):
@@ -137,7 +139,7 @@ def process_matches(request):
         answer_string = request.POST.get('inputSoFar')
         answers = answer_string.split('\n')
         which_abstract = request.POST.get('abstract_pk')
-        answer_time_dict = json.loads(request.POST.get('userMatches'))
+        answer_time_dict = json.loads(request.POST.get('userTypedMatches'))
     except:
         #TODO: Better error handling for bad POST data
         return HttpResponse("Whoops!  Error.  I will handle this better later.")
@@ -145,7 +147,6 @@ def process_matches(request):
     annotator_pk = User.objects.get(pk=request.user.id)
     abstract_pk = Abstract.objects.get(pk=which_abstract)
 
-    #TODO: Create client feedback in real time for answers
     for answer in answers:
         clean_answer = answer.strip()
 

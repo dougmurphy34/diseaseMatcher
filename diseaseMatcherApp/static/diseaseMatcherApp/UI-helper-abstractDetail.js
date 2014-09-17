@@ -94,7 +94,7 @@ function dupe_message() {
 function moveText(e) {
     //If user presses "Enter" - keyCode 13 - move the typed text to the textArea, then clear the input box
 
-if (e.keyCode == 13) {
+    if (e.keyCode == 13) {
         if (!test_for_matches(inputBox.val())) {
             //There's no match; don't take answer, and also reject form submission
             inputBox.val('');
@@ -129,26 +129,61 @@ function addTextFromMouseUp(textSelection) {
 
     if (test_for_too_long(textSelection)) {
             //Too long, don't add.  This is common when a vertical mouse move grabs a whole extra row of text.
+            //text_for_too_long function handles user error feedback
             return false
         }
 
-    var timeLeft = secondsLeft.html();
+    if (textSelection.anchorOffset == textSelection.focusOffset) {
+            //It's a zero-length selection. Get out of here.
+            return false
+        }
 
-    //clean up result
-    var cleanText = trim_evil_characters(textSelection.toString());
+    if (window.confirm('select the text ' + textSelection.toString() + '?')){
+        if (textSelection.anchorOffset > textSelection.focusOffset) {
+            //It's a forward-direction selection, so the anchor (mousedown) is the start and the focus (mouseup) is the end
+            start = textSelection.anchorOffset;
+            end = textSelection.focusOffset;
+        }
+        else {
+            //It's a backwards selection
+            start = textSelection.focusOffset;
+            end = textSelection.anchorOffset;
+        }
 
-    if (typeof answerDict[cleanText] == 'undefined') {//prevent dupes, which would reset time entered to later time
 
-        //record answer and time to our associative array
-        answerDict[cleanText] = LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft);
 
-        //update UI
-        var textareaText = resultsBox.val();
-        resultsBox.val(textareaText + cleanText + "\n");
+
+        if (textSelection.anchorNode.parentNode.nodeName == 'DIV') {
+            //We are in the abstract text.  Otherwise, it would have returned 'H1'.
+            //Boy, is this asking for trouble when we do refactoring.  And horribly tight coupling between view and controller.
+
+            //Offset seems to start at 0 in title, and at 9 in text.  Why 9?
+
+        }
+        else {
+            //We are in abstract title.
+        }
+
+        var timeLeft = secondsLeft.html();
+
+        //clean up result
+        var cleanText = trim_evil_characters(textSelection.toString());
+
+        if (typeof answerDict[cleanText] == 'undefined') {//prevent dupes, which would reset time entered to later time
+
+            //record answer and time to our associative array
+            answerDict[cleanText] = LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft);
+
+            //update UI
+            var textareaText = resultsBox.val();
+            resultsBox.val(textareaText + cleanText + "\n");
+        }
+        else {
+            dupe_message()
+        }
     }
-    else {
-        dupe_message()
-    }
+
+
 }
 
 
@@ -159,6 +194,7 @@ $(document).ready(function() {
     resultsBox = $('#inputSoFar');
     secondsLeft = $('#secondsLeft');
     abstractText = $('#abstractTextDiv');
+    abstractTitle = $('#abstractTitleDiv');
 
     inputBox.focus();
     resultsBox.css('background-color', '#eeeeee');
@@ -166,12 +202,13 @@ $(document).ready(function() {
     inputBox.keypress(moveText);
     secondsLeft.html(LENGTH_OF_GAME_IN_SECONDS);
     startCountdown(secondsLeft);
+    abstractTitle.mouseup(function() {addTextFromMouseUp(window.getSelection())});
     abstractText.mouseup(function() {addTextFromMouseUp(window.getSelection())});
 
     //prevent multiple submissions of the form
     //this was a problem with the auto-submit when processing the POST took > 1 second
     $("form").submit(function() {
-        $("#userMatches").val(JSON.stringify(answerDict));
+        $("#userTypedMatches").val(JSON.stringify(answerDict));
         $(this).submit(function() {
             return false;
         });
