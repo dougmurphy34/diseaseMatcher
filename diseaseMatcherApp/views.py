@@ -140,6 +140,7 @@ def process_matches(request):
         answers = answer_string.split('\n')
         which_abstract = request.POST.get('abstract_pk')
         answer_time_dict = json.loads(request.POST.get('userTypedMatches'))
+        selected_text_time_dict = json.loads(request.POST.get('userHighlightedMatches'))
     except:
         #TODO: Better error handling for bad POST data
         return HttpResponse("Whoops!  Error.  I will handle this better later.")
@@ -151,33 +152,51 @@ def process_matches(request):
         clean_answer = answer.strip()
 
         if 51 > len(clean_answer) > 0:
-            #TODO: handle key error on this (happens when user submits, then hits back button.  Prevent this?)
-            this_match_time = answer_time_dict[clean_answer]
+            if clean_answer in answer_time_dict:#TODO: This will cause a silent error when both ifs false (happens when user submits, then hits back button.  Prevent this?)
 
-            offset_list = abstract_pk.match_location(clean_answer)
+                this_match_time = answer_time_dict[clean_answer]
 
-            if offset_list[0][0] != -1:
+                offset_list = abstract_pk.match_location(clean_answer)
+
+                if offset_list[0][0] != -1:
+                    try:
+                        #create Match record here.  Fields: abstract, annotator, text_matches, match_length, match_time
+                        match = Matches.objects.create(abstract=abstract_pk, annotator = annotator_pk, text_matched=clean_answer,
+                                                       match_length=len(clean_answer), match_time=this_match_time)
+
+                        match.save()
+
+                        for offset in offset_list:
+                            #format of offset variable will be [HowDeepInTextAppears, MatchLocationAs0or1].  No match = [-1,-1]
+                            if offset[0] != -1:
+                                this_match_location = MatchLocationsLookup.objects.get(pk=offset[1])
+
+                                #Create MatchLocations here.  Fields: match, match_location, match_offset
+
+                                where_we_matched = MatchLocations.objects.create(match=match, match_location=this_match_location,
+                                                                                 match_offset=offset[0])
+
+                                where_we_matched.save()
+                    except:
+                        #TODO: Better error handling for database fail on match create
+                        return HttpResponse("Something went screwy creating text-entered match records in the database.")
+            elif clean_answer in selected_text_time_dict:#TODO: if they both select-enter and text-enter the same thing, does the dupe check catch this?  (on client side)
                 try:
-                    #create Match record here.  Fields: abstract, annotator, text_matches, match_length, match_time
-                    match = Matches.objects.create(abstract=abstract_pk, annotator = annotator_pk, text_matched=clean_answer,
-                                                   match_length=len(clean_answer), match_time=this_match_time)
-
+                    #process selected test.  Format {"selectedText" : {"seconds": 8, "titleText": 1, "offset": 32}}
+                    match = Matches.objects.create(abstract=abstract_pk, annotator=annotator_pk, text_matched=clean_answer,
+                                                   match_length=len(clean_answer), match_time=selected_text_time_dict[clean_answer]['secondsInt'])
                     match.save()
-
-                    for offset in offset_list:
-                        #format of offset variable will be [HowDeepInTextAppears, MatchLocationAs0or1].  No match = [-1,-1]
-                        if offset[0] != -1:
-                            this_match_location = MatchLocationsLookup.objects.get(pk=offset[1])
-
-                            #Create MatchLocations here.  Fields: match, match_location, match_offset
-
-                            where_we_matched = MatchLocations.objects.create(match=match, match_location=this_match_location,
-                                                                             match_offset=offset[0])
-
-                            where_we_matched.save()
                 except:
-                    #TODO: Better error handling for database fail on match create
-                    return HttpResponse("Something went screwy creating match records in the database.")
+                    return HttpResponse("Error on create match for highlight text")
+                try:
+                    this_match_location = MatchLocationsLookup.objects.get(pk=selected_text_time_dict[clean_answer]['titleTextInt'])
+
+                    where_we_matched = MatchLocations.objects.create(match=match, match_location=this_match_location,
+                                                                     match_offset=selected_text_time_dict[clean_answer]['offset'])
+                    where_we_matched.save()
+                except:
+                        error_string = "Something went screwy creating higlight-based match LOCATION records in the database.  " + str(clean_answer) + ", " + str(selected_text_time_dict[clean_answer])
+                        return HttpResponse(error_string)
 
     return HttpResponseRedirect(reverse('diseaseMatcherApp:playAgain'))
 

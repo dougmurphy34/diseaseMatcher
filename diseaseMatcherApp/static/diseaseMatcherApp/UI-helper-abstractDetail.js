@@ -18,7 +18,8 @@
 
 LENGTH_OF_GAME_IN_SECONDS = 300;
 
-var answerDict = {};
+var answerDict = {};//Format {"theTextTyped" : secondsInt}
+var selectDict = {};//Format {"selectedText" : {"secondsInt": 8, "titleText": 1, "offset": 32}}
 
 function startCountdown(whatsLeft) {
     //vars in document.ready are not in scope here
@@ -39,14 +40,14 @@ function startCountdown(whatsLeft) {
 
 function trim_evil_characters(input_string) {
         //Trims leading and trailing spaces and tabs
-        //Leaves behind CRLF, which we need - that's why I didn't use jquery's .trim()
+        //Leaves behind CRLF, which we need - that's why I didn't use jquery's .trim()//TODO: with table model (not textarea) maybe we can move to .trim()?
         //Also removes some punctuation, but leaves other (ie, so Asperger's is not converted to Aspergers and therefore not matched)
 
         //***These characters pose no problem: , . - / ; ' " ALSO () in pairs
         //***These break things: uneven parentheses
 
         //Trimming punctuation passes sanitized answers to be matched vs. actual text, so it won't find any matches.  This is usually fine.
-        //TODO: Once client side matching is implemented, reject dangerous input and pop up a fadeaway warning about avoiding punctuation.
+        //TODO: On rejecting dangerous input and pop up a fadeaway warning about avoiding punctuation. -- mouse matches only
         var no_paren_family = input_string.replace(/[(){}\[\]]+/g,"");
         //no_punctuation = no_paren_family.replace(/[\.\?!,]+/g,"");
         var no_leads = no_paren_family.replace(/^[ \t]+/, "");
@@ -68,7 +69,7 @@ function test_for_matches(userEnteredText) {
         feedback.text('no Match').css('backgroundColor',"red").fadeOut(1500);
         return false
     }
-    else { //TODO: Probably remove this from final version, provides minimal value
+    else { //Don't remove this - game needs as much positive feedback as it can get right now.  Maybe rename (because it's not a partner match).
         feedback.fadeIn('fast');
         feedback.text('Match!').css('backgroundColor',"green").fadeOut(1200);
         return true
@@ -134,12 +135,13 @@ function addTextFromMouseUp(textSelection) {
         }
 
     if (textSelection.anchorOffset == textSelection.focusOffset) {
-            //It's a zero-length selection. Get out of here.
+            //It's a zero-length selection, or it perfectly spans mid-title to mid-text. Either way, get out of here.
             return false
         }
 
     if (window.confirm('select the text ' + textSelection.toString() + '?')){
-        if (textSelection.anchorOffset > textSelection.focusOffset) {
+
+        if (textSelection.anchorOffset < textSelection.focusOffset) {
             //It's a forward-direction selection, so the anchor (mousedown) is the start and the focus (mouseup) is the end
             start = textSelection.anchorOffset;
             end = textSelection.focusOffset;
@@ -150,29 +152,39 @@ function addTextFromMouseUp(textSelection) {
             end = textSelection.anchorOffset;
         }
 
-
-
+        var titleTextInt; //1 = title, 2 = abstract text
+        var offset;
 
         if (textSelection.anchorNode.parentNode.nodeName == 'DIV') {
             //We are in the abstract text.  Otherwise, it would have returned 'H1'.
             //Boy, is this asking for trouble when we do refactoring.  And horribly tight coupling between view and controller.
+            titleTextInt = 2;
 
             //Offset seems to start at 0 in title, and at 9 in text.  Why 9?
-
+            offset = start - 9;
         }
         else {
             //We are in abstract title.
+            titleTextInt = 1;
+            offset = start;
         }
+
+        //adjust offset for leading spaces
+        len1 = textSelection.toString().length;
+        len2 = textSelection.toString().replace(/^[ \t]+/, "").length;
+        lendiff = len1-len2;
+        offset += lendiff;
+
 
         var timeLeft = secondsLeft.html();
 
         //clean up result
         var cleanText = trim_evil_characters(textSelection.toString());
 
-        if (typeof answerDict[cleanText] == 'undefined') {//prevent dupes, which would reset time entered to later time
+        if (typeof selectDict[cleanText] == 'undefined') {//prevent dupes, which would reset time entered to later time
 
             //record answer and time to our associative array
-            answerDict[cleanText] = LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft);
+            selectDict[cleanText] = {"secondsInt": LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft), "titleTextInt": titleTextInt, "offset": offset};
 
             //update UI
             var textareaText = resultsBox.val();
@@ -202,13 +214,14 @@ $(document).ready(function() {
     inputBox.keypress(moveText);
     secondsLeft.html(LENGTH_OF_GAME_IN_SECONDS);
     startCountdown(secondsLeft);
-    abstractTitle.mouseup(function() {addTextFromMouseUp(window.getSelection())});
+    abstractTitle.mouseup(function() {addTextFromMouseUp(window.getSelection())});//TODO: Browser compatibility testing on window.getSelection()
     abstractText.mouseup(function() {addTextFromMouseUp(window.getSelection())});
 
     //prevent multiple submissions of the form
     //this was a problem with the auto-submit when processing the POST took > 1 second
     $("form").submit(function() {
         $("#userTypedMatches").val(JSON.stringify(answerDict));
+        $("#userHighlightedMatches").val(JSON.stringify(selectDict));
         $(this).submit(function() {
             return false;
         });
