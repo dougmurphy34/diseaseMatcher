@@ -90,10 +90,13 @@ class PurposeForPlayingLookup(models.Model):
     purpose = models.TextField(max_length=20)
 
 
-class UserDetails(TimeStampedModel):
-    #age, gender, occupation, purpose for playing, education  (all optional)
-    age = models.IntegerField(max_length=3)
-    gender = models.ForeignKey(GenderLookup)
+class OccupationLookup(models.Model):
     occupation = models.TextField(max_length=50)
-    purpose_for_playing = models.TextField(max_length=50)
-    education = models.ForeignKey(EducationLookup)
+
+
+class UserDetails(TimeStampedModel):
+    age = models.IntegerField(max_length=3, blank=True)
+    gender = models.ForeignKey(GenderLookup, blank=True)
+    occupation = models.ForeignKey(OccupationLookup, blank=True)
+    purpose_for_playing = models.ForeignKey(PurposeForPlayingLookup, blank=True)
+    education = models.ForeignKey(EducationLookup, blank=True)
