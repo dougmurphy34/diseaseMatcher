@@ -3,12 +3,11 @@
  * This file contains client-side logic for the template diseaseMatcherApp/abstractDetail.html
  */
 
-//TODO: TextArea is a poor display object, change to Table
 //TODO: Fix "double fadeout" message problem
 
     // PLAN GOES LIKE THIS:
     // 1) DONE - regex comparison of entered text to title and abstract text.  Disallow (with message) if no match.
-    // 2) Display answers in a list, in black.  -->probably time to change textarea to a table
+    // 2) DONE - Display answers in a list, in black.  -->probably time to change textarea to a table
     // 3) In request.context, pass a list of all past successful answers (ordered by frequency) to view.
     // 4) Every 5ish seconds, add the top answer to "AI answers".  (This means max possible answers is LENGTH_OF_GAME_IN_SECONDS / 5)
     // 5) If an answer is entered by both user and AI, change its color to green.
@@ -61,7 +60,7 @@ function trim_evil_characters(input_string) {
 function test_for_matches(userEnteredText) {
 
     var thisRe = new RegExp(userEnteredText);
-    var abstractString = abstractText.text();
+    var abstractString = abstractTitle.text() + abstractText.text();
     var result = abstractString.search(thisRe);
 
     if (result == -1) {
@@ -105,15 +104,11 @@ function moveText(e) {
         var inputText = trim_evil_characters(inputBox.val());
 
         if (typeof answerDict[inputText] == 'undefined') {//prevent dupes, which would reset time entered to later time
-            textareaText = resultsBox.val();
             timeLeft = secondsLeft.html();
             //record answer and time to our associative array
             answerDict[inputText] = LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft);
 
-            //Update UI
-            resultsBox.val(textareaText + inputText + "\n");
-            //TODO: NewMethod - USE MORE JQUERY.  http://www.htmlgoodies.com/beyond/css/working_w_tables_using_jquery.html
-            //$('#answerBody').appendChild(document.createElement('tr'))
+            updateUI();
 
 
         }
@@ -189,9 +184,7 @@ function addTextFromMouseUp(textSelection) {
             //record answer and time to our associative array
             selectDict[cleanText] = {"secondsInt": LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft), "titleTextInt": titleTextInt, "offset": offset};
 
-            //update UI
-            var textareaText = resultsBox.val();
-            resultsBox.val(textareaText + cleanText + "\n");
+            updateUI();
         }
         else {
             dupe_message()
@@ -201,19 +194,56 @@ function addTextFromMouseUp(textSelection) {
 
 }
 
+function updateUI() {
+    //TODO: CSS this up.  Consider min-width, align.  Do this at TH level.
+    //Give each item in answer column a span with ID = answer + answerText.toString().  Will be useful later for matching.
+    var table = document.getElementById("answerBody");  //Why this doesn't work with the variable answerBody, I have no idea
+    table.innerHTML = "";
+
+    var both_dicts = $.extend({}, answerDict, selectDict);
+
+    for (var key in both_dicts) {
+
+        if (both_dicts.hasOwnProperty(key)) {
+            var new_row = table.insertRow(-1);
+            var new_answer_cell = new_row.insertCell(0);
+            var new_delete_cell = new_row.insertCell(1);
+            new_answer_cell.id = "answer" + key.toString();
+            new_answer_cell.innerHTML = key;
+            new_delete_cell.innerHTML = "<a href='#' onclick='deleteKey(\"" + key.toString() + "\")'>X</a>";
+        }
+    }
+
+
+}
+
+function deleteKey(aKey){
+    //called when user clicks the "X" next to a previous answer
+    //takes an answer (the text of it, which is the key in the dict) and removes it from "both" (really, either) dicts.
+    //This works for answerDict OR for selectDict because the keys are the same, only the values are different
+    //Then, redraws the table by calling updateUI()
+
+    if (typeof answerDict[aKey] != 'undefined') {
+        delete(answerDict[aKey]);
+    }
+
+    if (typeof selectDict[aKey] != 'undefined') {
+        delete(selectDict[aKey]);
+    }
+
+    updateUI(answerDict);
+}
 
 $(document).ready(function() {
 
     feedback = $('#feedback');
     inputBox = $('#userInput');
-    resultsBox = $('#inputSoFar');
     secondsLeft = $('#secondsLeft');
     abstractText = $('#abstractTextDiv');
     abstractTitle = $('#abstractTitleDiv');
+    answerDisplay = $('#answerDisplay');
 
     inputBox.focus();
-    resultsBox.css('background-color', '#eeeeee');
-    resultsBox.css('pointer-events', 'none');
     inputBox.keypress(moveText);
     secondsLeft.html(LENGTH_OF_GAME_IN_SECONDS);
     startCountdown(secondsLeft);

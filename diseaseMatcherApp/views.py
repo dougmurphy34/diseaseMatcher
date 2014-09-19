@@ -2,7 +2,7 @@ from __future__ import absolute_import
 import random
 import json
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404 #TODO: Replace get() calls with get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from django.template import loader, context, RequestContext
@@ -13,6 +13,18 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from .models import Matches, Abstract, MatchLocations, MatchLocationsLookup
+
+'''Principles of Views
+
+--Less view code is better
+--Never repeat code in views
+--Views should handle presentation logic.  Try to keep business login in models (or forms if necessary).
+--Keep views simple
+--Use function-based views to write custom 403,404, and 500 handlers.
+--Avoid complex nested-if blocks
+--Keep mixins simpler (Mixin = abstract class.  When inheriting, always put mixin as left argument, django class as right argument.  All mixins inherit from 'object').
+'''
+
 
 # **********VIEWS**********
 @login_required
@@ -89,7 +101,7 @@ def user_profile(request):
         match_count = Matches.objects.filter(abstract_id=abstract).count()
         dict_of_work[match_name] = match_count
 
-    #Neither of these sorts is producing a working dictionary.  Maybe because it's a list of tuples?
+    #TODO: Neither of these sorts is producing a working dictionary.  Maybe because it's a list of tuples?
     #sorted_dict_of_work = sorted(dict_of_work.items(), key=lambda x: x[1])
     #sorted_dict_of_work = sorted(dict_of_work.iteritems(), key=operator.itemgetter(1))
 
@@ -141,8 +153,6 @@ def process_matches(request):
 
     #List of all words entered, in a space-delimited string
     try:
-        answer_string = request.POST.get('inputSoFar')
-        answers = answer_string.split('\n')
         which_abstract = request.POST.get('abstract_pk')
         answer_time_dict = json.loads(request.POST.get('userTypedMatches'))
         selected_text_time_dict = json.loads(request.POST.get('userHighlightedMatches'))
@@ -152,6 +162,16 @@ def process_matches(request):
 
     annotator_pk = User.objects.get(pk=request.user.id)
     abstract_pk = Abstract.objects.get(pk=which_abstract)
+
+    #PSEUDOCODE: answers = union (answer_time_dict.keys, selected_text_time_dict.keys)
+
+    answers = []
+
+    for key in answer_time_dict:
+        answers.append(key)
+
+    for key in selected_text_time_dict:
+        answers.append(key)
 
     for answer in answers:
         clean_answer = answer.strip()
@@ -185,7 +205,7 @@ def process_matches(request):
                     except:
                         #TODO: Better error handling for database fail on match create
                         return HttpResponse("Something went screwy creating text-entered match records in the database.")
-            elif clean_answer in selected_text_time_dict:#TODO: if they both select-enter and text-enter the same thing, does the dupe check catch this?  (on client side)
+            elif clean_answer in selected_text_time_dict:#TODO: if they both select-enter and text-enter the same thing,dupe check does not catch it  (on client side)
                 try:
                     #process selected test.  Format {"selectedText" : {"seconds": 8, "titleText": 1, "offset": 32}}
                     match = Matches.objects.create(abstract=abstract_pk, annotator=annotator_pk, text_matched=clean_answer,
@@ -207,6 +227,7 @@ def process_matches(request):
 
 
 #**********HELPER FUNCTIONS ******************
+#TODO: These are not views.  Move them to a utils.py file
 
 def calculate_annotator_ranking(annotator):
     #helper function
