@@ -1,0 +1,45 @@
+Disease Matcher Game Designs
+
+1) SpeedMatcher
+GAMEPLAY:
+User tries to classify abstract to single disease.  Once they have picked the same answer as their partner, they move
+    on to the next abstract.  Points scored based on number of abstracts classified in 60 seconds.
+
+AI WIZARDRY:
+Top 2 answers are preloaded from DB.  50% of the time the AI is "faster" than the user - as soon as the user picks one
+    of those two answers, they get a match and move on.  Other 50% the AI is "slower" - capability of matching kicks in
+    at a random time 4-7 seconds from load of abstract.
+
+BENEFITS TO THIS MODEL:
+--Time pressure feels intense, engaging player.
+--Clear scoring system in current game and over time (how many abstracts did you get?).
+--High volume of data gathered per user-minute.
+
+WEAKNESSES OF THIS MODEL:
+--Nothing on the screen moves.  This is bad for user engagement.
+--Low replayability.  Gets boring quickly.  Best way to sell it: Focus on leaderboard and some easy-to-visualize
+    contribution to science.
+--Speed model encourages false positives (identifying any big sciency word).
+
+UNANSWERED QUESTIONS:
+--Where does the initial data come from for the AI's answers?
+
+
+2) DeepMatcher
+GAMEPLAY:
+User tries to pick the same disease-phrases as partner.  User tries to get to three matches in the quickest possible
+    time.  Game ends on third match or 60 seconds elapsed.  Score based on speed to third match.
+
+AI WIZARDRY:
+Top 6 answers pulled from database.  At a random time every 3-5 seconds one of the six answers is chosen at random
+    and "activated".  Match is recorded as soon as a phrase is user-entered and AI-activated.
+
+BENEFITS TO THIS MODEL:
+--Feels more interactive.  The Fiero moments in the game requires you and your "partner" to work together, and some of
+    your answers will turn green without your input.
+--If an abstract is related to several diseases, we are much more likely to get them all.
+
+WEAKNESSES OF THIS MODEL:
+--Hard to measure long-term progress in a way that encourages the user to keep playing.
+--In abstracts that have only one clear answer, we will get some "junk" answers in nearly the same frequency as the
+    correct answer.

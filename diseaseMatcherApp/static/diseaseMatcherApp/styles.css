@@ -4,31 +4,48 @@
           box-sizing: border-box;
 }
 
-textarea {
-    line-height: 1;
-    max-width: 200px;
-    height: 200px;
-    color: green;
-    margin: 0 auto;
-    position: relative
-    right: 20px
-}
-
 h1 {
     color: blueviolet;
 }
 
+th {
+    text-decoration: underline;
+    color: darkmagenta;
+    min-width: 150px;
+}
+
 .banner {
-    /*position: fixed;*/
     font-size: xx-large;
     font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    padding-left: 50px;
+    padding-top: 20px;
 }
+
+.bannerUsername {
+    float:right;
+    padding-right: 100px;
+}
+
+.menuLink {
+    padding: 8px;
+}
+
 
 .instructions {
     color: darkblue;
     font-family: "Courier New";
     font-size: large;
     font-weight: bold;
+    position: relative;
+    top: 15px;
+    /*padding-top: 25px;*/
+}
+
+.answerTable {
+    padding: 3px;
+    border-width: 2px;
+    text-align: center;
 }
 
 #leftColumn {

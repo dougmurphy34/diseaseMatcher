@@ -85,6 +85,12 @@ function test_for_too_long(answerString) {
     return false
 }
 
+function no_dupe(text_passed) {
+    //checks text against both typed answers and mouse-selected answers
+    //returns TRUE if the answer is NOT a duplicate of an existing answer
+    return (typeof selectDict[text_passed] == 'undefined' && typeof answerDict[text_passed] == 'undefined')
+}
+
 function dupe_message() {
     feedback.fadeIn('fast');
     feedback.text('You already entered that one!').css('backgroundColor','red').fadeOut(3000);
@@ -103,7 +109,7 @@ function moveText(e) {
 
         var inputText = trim_evil_characters(inputBox.val());
 
-        if (typeof answerDict[inputText] == 'undefined') {//prevent dupes, which would reset time entered to later time
+        if (no_dupe(inputText)) {//prevent dupes, which would reset time entered to later time
             timeLeft = secondsLeft.html();
             //record answer and time to our associative array
             answerDict[inputText] = LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft);
@@ -179,7 +185,7 @@ function addTextFromMouseUp(textSelection) {
         //clean up result
         var cleanText = trim_evil_characters(textSelection.toString());
 
-        if (typeof selectDict[cleanText] == 'undefined') {//prevent dupes, which would reset time entered to later time
+        if (no_dupe(cleanText)) {//prevent dupes, which would reset time entered to later time
 
             //record answer and time to our associative array
             selectDict[cleanText] = {"secondsInt": LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft), "titleTextInt": titleTextInt, "offset": offset};

@@ -2,7 +2,8 @@ from __future__ import absolute_import
 import random
 import json
 
-from django.shortcuts import render, get_object_or_404 #TODO: Replace get() calls with get_object_or_404
+#TODO: Replace get() calls with get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from django.template import loader, context, RequestContext
@@ -163,8 +164,6 @@ def process_matches(request):
     annotator_pk = User.objects.get(pk=request.user.id)
     abstract_pk = Abstract.objects.get(pk=which_abstract)
 
-    #PSEUDOCODE: answers = union (answer_time_dict.keys, selected_text_time_dict.keys)
-
     answers = []
 
     for key in answer_time_dict:
@@ -205,7 +204,7 @@ def process_matches(request):
                     except:
                         #TODO: Better error handling for database fail on match create
                         return HttpResponse("Something went screwy creating text-entered match records in the database.")
-            elif clean_answer in selected_text_time_dict:#TODO: if they both select-enter and text-enter the same thing,dupe check does not catch it  (on client side)
+            elif clean_answer in selected_text_time_dict:
                 try:
                     #process selected test.  Format {"selectedText" : {"seconds": 8, "titleText": 1, "offset": 32}}
                     match = Matches.objects.create(abstract=abstract_pk, annotator=annotator_pk, text_matched=clean_answer,

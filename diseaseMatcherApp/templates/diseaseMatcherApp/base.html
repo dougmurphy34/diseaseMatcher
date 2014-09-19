@@ -13,11 +13,11 @@
     {% block extrascripts %}{% endblock %}<!-- no need to load all scripts to every page -->
 </head>
 <body>
-<span class="banner">DISEASE MATCHER BANNER</span> <span>Welcome, {{ user }}</span><br>
+<span class="banner">DISEASE MATCHER BANNER</span> <span class="bannerUsername">Welcome, {{ user }}</span><br><br>
 
-<a href="{% url 'diseaseMatcherApp:homePage' %}">Home</a>
-<a href="{% url 'diseaseMatcherApp:userProfile' %}">See User Profile</a>
-<a href="{% url 'logout' %}">Log Out</a>
+<a href="{% url 'diseaseMatcherApp:homePage' %}" class="menuLink">Home</a>
+<a href="{% url 'diseaseMatcherApp:userProfile' %}" class="menuLink">See User Profile</a>
+<a href="{% url 'logout' %}" class="menuLink">Log Out</a>
 <br>
 {% block content %}
     Content Goes Here
