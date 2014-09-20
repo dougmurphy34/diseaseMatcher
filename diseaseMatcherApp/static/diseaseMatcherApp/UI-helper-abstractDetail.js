@@ -201,7 +201,6 @@ function addTextFromMouseUp(textSelection) {
 }
 
 function updateUI() {
-    //TODO: CSS this up.  Consider min-width, align.  Do this at TH level.
     //Give each item in answer column a span with ID = answer + answerText.toString().  Will be useful later for matching.
     var table = document.getElementById("answerBody");  //Why this doesn't work with the variable answerBody, I have no idea
     table.innerHTML = "";

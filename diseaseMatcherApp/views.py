@@ -26,6 +26,8 @@ from .models import Matches, Abstract, MatchLocations, MatchLocationsLookup
 --Keep mixins simpler (Mixin = abstract class.  When inheriting, always put mixin as left argument, django class as right argument.  All mixins inherit from 'object').
 '''
 
+#TODO: Can I set a global variable for DeepMatcher vs. Speedmatcher, and then modularize base.py?
+#       Will probably still need to keep abstractDetail and process_matches separate.
 
 # **********VIEWS**********
 @login_required
@@ -226,8 +228,9 @@ def process_matches(request):
 
 
 #**********HELPER FUNCTIONS ******************
-#TODO: These are not views.  Move them to a utils.py file
+#TODO: These are not views.  Move them to a utils.py file, or to models.py
 
+#This should be a function on the Annotator model, but "Annotator" is actually django.contrib.auth.models.User
 def calculate_annotator_ranking(annotator):
     #helper function
     #takes an annotator, returns their rank among all annotators based on number of abstracts reviewed

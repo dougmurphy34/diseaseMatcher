@@ -21,9 +21,6 @@ WEAKNESSES OF THIS MODEL:
     contribution to science.
 --Speed model encourages false positives (identifying any big sciency word).
 
-UNANSWERED QUESTIONS:
---Where does the initial data come from for the AI's answers?
-
 
 2) DeepMatcher
 GAMEPLAY:

@@ -42,8 +42,6 @@ INSTALLED_APPS = (
     'diseaseMatcherApp',
 )
 
-#TODO: Research request template context processor
-
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

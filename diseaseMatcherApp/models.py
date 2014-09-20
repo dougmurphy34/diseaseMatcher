@@ -4,7 +4,7 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-
+#TODO: Can I make an Annotator model that inherits from the default User model?  I could put functions here.  See Two Scoops Ch. 18.
 
 #ABSTRACT CLASSES
 class TimeStampedModel(models.Model):
@@ -58,7 +58,8 @@ class MatchLocationsLookup(models.Model):
     location = models.TextField(max_length=25)
 
 
-#Each match is recorded separately, with match counts (for abstract-disease-location) gathered by query
+#For typed-in matches, each match is recorded separately, with abstract-disease-location gathered by query
+#For highlighted matches, single match recorded based on location of higlighted text
 class Matches(TimeStampedModel):
 
     def __unicode__(self):
@@ -66,7 +67,6 @@ class Matches(TimeStampedModel):
 
     abstract = models.ForeignKey(Abstract)
     annotator = models.ForeignKey(User)
-    #match_type = models.ForeignKey(MatchTypes)  #future functionality
     text_matched = models.TextField(max_length=50)
     match_length = models.IntegerField()
     match_time = models.IntegerField()  #How many seconds into the game did the user make the match?
