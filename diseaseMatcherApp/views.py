@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from .models import Matches, Abstract, MatchLocations, MatchLocationsLookup
+from .models import Matches, Abstract, MatchLocations, MatchLocationsLookup, Annotator
 
 '''Principles of Views
 
@@ -35,10 +35,10 @@ def home_page(request):
     #create a welcome page
     template = loader.get_template('diseaseMatcherApp/index.html')
 
-    user = request.user
+    user = Annotator.objects.get(pk=request.user.id)
 
     #pick a random abstract that this user hasn't seen before
-    rnd = get_a_fresh_abstract(user)
+    rnd = user.get_a_fresh_abstract()
     context = RequestContext(request, {'abstract_choice': rnd, 'user': user})
 
     return HttpResponse(template.render(context))
@@ -76,8 +76,8 @@ def play_again(request):
     #TODO: Should this page be a modular version of the home page?
     #Maybe this becomes a post-login and post-game "get started" page that also shows recent activity,
     #   fulfilling the role of visually rewarding the player for completion
-    user = request.user
-    rnd = get_a_fresh_abstract(user)
+    user = Annotator.objects.get(pk=request.user.id)
+    rnd = user.get_a_fresh_abstract()
 
     context = RequestContext(request,{'abstract_choice': rnd, 'user': user})
 
@@ -92,12 +92,12 @@ def user_profile(request):
 
     dict_of_work = {}
 
-    this_user = request.user
+    this_user = Annotator.objects.get(pk=request.user.id)
     abstracts_worked_on = Matches.objects.filter(annotator_id=this_user.pk).values_list('abstract_id', flat=True).distinct()
 
     work_count = abstracts_worked_on.count
 
-    my_rank = calculate_annotator_ranking(this_user)
+    my_rank = this_user.calculate_ranking()
 
     for abstract in abstracts_worked_on:
         match_name = Abstract.objects.get(pk=abstract).title
@@ -225,39 +225,6 @@ def process_matches(request):
                         return HttpResponse(error_string)
 
     return HttpResponseRedirect(reverse('diseaseMatcherApp:playAgain'))
-
-
-#**********HELPER FUNCTIONS ******************
-#TODO: These are not views.  Move them to a utils.py file, or to models.py
-
-#This should be a function on the Annotator model, but "Annotator" is actually django.contrib.auth.models.User
-def calculate_annotator_ranking(annotator):
-    #helper function
-    #takes an annotator, returns their rank among all annotators based on number of abstracts reviewed
-    this_user_count = Matches.objects.filter(annotator=annotator).values_list('abstract_id', flat=True).distinct().count()
-    better_users = 0
-
-    all_users = User.objects.all()
-
-    for user in all_users:
-        temp_user_count = Matches.objects.filter(annotator=user).values_list('abstract_id', flat=True).distinct().count()
-        if temp_user_count > this_user_count:
-            better_users += 1
-
-    return better_users + 1
-
-
-def get_a_fresh_abstract(annotator):
-    abstracts_seen = Matches.objects.filter(annotator=annotator).values_list('abstract_id')
-    how_many_abstracts = Abstract.objects.all().count()
-
-    if abstracts_seen == how_many_abstracts:
-        return 0 #TODO: Handle this so that the user gets a "nice job, come back later" message
-
-    while True:
-        random_number = random.randint(1, how_many_abstracts)
-        if random_number not in abstracts_seen:
-            return random_number
 
 
 

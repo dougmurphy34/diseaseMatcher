@@ -1,10 +1,12 @@
 import re
+import random
 from datetime import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 #TODO: Can I make an Annotator model that inherits from the default User model?  I could put functions here.  See Two Scoops Ch. 18.
+
 
 #ABSTRACT CLASSES
 class TimeStampedModel(models.Model):
@@ -51,6 +53,40 @@ class Abstract(models.Model):
             return list_of_results
         else:
             return [[-1, -1]]
+
+
+#Extends django.auth.models.User using a proxy model to add useful methods
+class Annotator(User):
+    #TODO: If i get this working, take calculate_annotator_ranking out of views.py
+
+    class Meta:
+        proxy = True
+
+    def calculate_ranking(self):
+        #returns rank among all annotators based on number of abstracts reviewed
+        this_user_count = Matches.objects.filter(annotator=self).values_list('abstract_id', flat=True).distinct().count()
+        better_users = 0
+
+        all_users = User.objects.all()
+
+        for user in all_users:
+            temp_user_count = Matches.objects.filter(annotator=user).values_list('abstract_id', flat=True).distinct().count()
+            if temp_user_count > this_user_count:
+                better_users += 1
+
+        return better_users + 1
+
+    def get_a_fresh_abstract(self):
+        abstracts_seen = Matches.objects.filter(annotator=self).values_list('abstract_id')
+        how_many_abstracts = Abstract.objects.all().count()
+
+        if abstracts_seen == how_many_abstracts:
+            return 0 #TODO: Handle this so that the user gets a "nice job, come back later" message
+
+        while True:
+            random_number = random.randint(1, how_many_abstracts)
+            if random_number not in abstracts_seen:
+                return random_number
 
 
 #Lookup table.  Describes which field had the text match.  Current options: Title, Abstract Text.

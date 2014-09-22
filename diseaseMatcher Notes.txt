@@ -43,7 +43,6 @@ Status of development (9/19/2014):
         User can view play history and ranking on user profile page.
 
 Next steps:
-    Bug fix: Answer entered by both typing and mouse sneaks through dupe check.
     Incorporate scoring system for matches and rankings.
     AI partner.
     Interface for additional registration data - age, gender, occupation, purpose for playing, education  (all optional)
