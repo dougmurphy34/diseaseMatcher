@@ -17,6 +17,34 @@ Tools used:     django 1.6.5 web framework (lab standard, personal preference fo
 	            NO data migration - just syncdb
 	                (confirmed, South does not and will not support MariaDB http://south.aeracode.org/ticket/1309)
 
+Steps to Deploy:
+    !!!This section is a work in progress.  Including it now to have accurate record of steps to populate database.
+
+    Install dependencies - more detail to come
+        Python, Django, MariaDB
+        http://www.jeffknupp.com/blog/2013/12/18/starting-a-django-16-project-the-right-way/)
+
+    Configure settings.py
+        debug=FALSE
+        secret key hidden
+        DB settings
+
+    Populate database
+        Drop any tables prefixed with "diseaseMatcherApp"
+        manage.py syncdb
+        Populate_lookup_tables.sql
+        XMLdataLoader.py (change path to source file if not on Doug's machine)
+
+Testing Tips:
+    !!!Work in Progress
+
+    Create fixtures
+        Make sure Matches table is empty before recreating fixtures.
+        python manage.py dumpdata diseaseMatcherApp --indent=4 > diseaseMatcherApp/fixtures/diseaseMatcherApp_views_testdata.json
+
+    Changes to Abstracts in fixtures (currently the Gold Standard 100)
+        If you change the abstracts, you're gonna have a bad time.
+
 Design Principles used:
     Unit and integration testing using unittest with frameworks
     MVC model as implemented by django
@@ -24,7 +52,7 @@ Design Principles used:
     Agile Development (Frequent functional builds)
 
 
-Status of development (9/19/2014):
+Status of development (9/23/2014):
     Game entry:
         If user is not logged in, they are walked through a login/registration process.  New registrations automatically logged in.
         Landing page receives user, navigates to single (random but new to user) abstract display with game interface.
@@ -43,8 +71,8 @@ Status of development (9/19/2014):
         User can view play history and ranking on user profile page.
 
 Next steps:
+    AI partner - match against Gold Standard answers, instead of just text.  Both?
     Incorporate scoring system for matches and rankings.
-    AI partner.
     Interface for additional registration data - age, gender, occupation, purpose for playing, education  (all optional)
 
 Future direction:
@@ -55,6 +83,7 @@ Future direction:
 
 Software Design questions:
     What functionality do we want that isn't in this document yet?
+    Should we record answers that match text, but not Gold Standard?
 
 Product Design questions:
     What reports do we need to pull from all this data we are gathering?  How do we want to get the data out and present it?  Who will use the data, and how?
@@ -62,3 +91,4 @@ Product Design questions:
 
 Game design questions:
     Confirm vs. undo on adding answer via mouse selection: http://alistapart.com/article/neveruseawarning
+    In DeepMatcher, do two different mouse-selected answers that are text-identical but offset-different count as 1 match or 2?

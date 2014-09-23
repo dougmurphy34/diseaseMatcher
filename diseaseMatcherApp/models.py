@@ -5,7 +5,6 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-#TODO: Can I make an Annotator model that inherits from the default User model?  I could put functions here.  See Two Scoops Ch. 18.
 
 
 #ABSTRACT CLASSES
@@ -27,16 +26,18 @@ class Abstract(models.Model):
     abstract_id = models.IntegerField()
     title = models.TextField(max_length=500)
     abstract_text = models.TextField(max_length=5000)
-    pub_date = models.DateTimeField(default=datetime.now)
+    pub_date = models.DateField(default=datetime.now())
 
     def __unicode__(self):
         return self.title
 
     def match_location(self, diseaseString):
-        #search self.abstract_text and self.title for diseaseString
-        #return all locations of a match, or -1 if no match
-        #RETURN FORMAT: [[titleOrText, offset],[titleOrText2, offset2],etc.]
-        #Title Match = "1", Abstract Text Match = "2"
+        """
+        search self.abstract_text and self.title for diseaseString
+        return all locations of a match, or -1 if no match
+        RETURN FORMAT: [[titleOrText, offset],[titleOrText2, offset2],etc.]
+        Title Match = "1", Abstract Text Match = "2"
+        """
 
         text_matches = re.finditer(diseaseString, self.abstract_text)
         title_matches = re.finditer(diseaseString, self.title)
@@ -57,7 +58,8 @@ class Abstract(models.Model):
 
 #Extends django.auth.models.User using a proxy model to add useful methods
 class Annotator(User):
-    #TODO: If i get this working, take calculate_annotator_ranking out of views.py
+    #TODO: This plus the user details model should become something other than a proxy class, most likely.
+    #   A one-to-one?  Check Two Scoops ch. 18.
 
     class Meta:
         proxy = True
@@ -89,31 +91,6 @@ class Annotator(User):
                 return random_number
 
 
-#Lookup table.  Describes which field had the text match.  Current options: Title, Abstract Text.
-class MatchLocationsLookup(models.Model):
-    location = models.TextField(max_length=25)
-
-
-#For typed-in matches, each match is recorded separately, with abstract-disease-location gathered by query
-#For highlighted matches, single match recorded based on location of higlighted text
-class Matches(TimeStampedModel):
-
-    def __unicode__(self):
-        return self.text_matched
-
-    abstract = models.ForeignKey(Abstract)
-    annotator = models.ForeignKey(User)
-    text_matched = models.TextField(max_length=50)
-    match_length = models.IntegerField()
-    match_time = models.IntegerField()  #How many seconds into the game did the user make the match?
-
-
-class MatchLocations(TimeStampedModel):
-    match = models.ForeignKey(Matches)
-    match_location = models.ForeignKey(MatchLocationsLookup)
-    match_offset = models.IntegerField()
-
-
 class GenderLookup(models.Model):
     gender = models.TextField(max_length=6)
 
@@ -136,3 +113,52 @@ class UserDetails(TimeStampedModel):
     occupation = models.ForeignKey(OccupationLookup, blank=True)
     purpose_for_playing = models.ForeignKey(PurposeForPlayingLookup, blank=True)
     education = models.ForeignKey(EducationLookup, blank=True)
+
+
+class Matches(TimeStampedModel):
+
+    def __unicode__(self):
+        return self.text_matched
+
+    abstract = models.ForeignKey(Abstract)
+    annotator = models.ForeignKey(User)
+    text_matched = models.TextField(max_length=50)
+    match_length = models.IntegerField()
+    match_time = models.IntegerField()  #How many seconds into the game did the user make the match?
+
+
+#Lookup table.  Describes which field had the text match.  Current options: Title, Abstract Text.
+class MatchLocationsLookup(models.Model):
+    location = models.TextField(max_length=25)
+
+class GoldStandardMatch(models.Model):
+    """
+    This seems a bit like repeating myself with Matches, but differences:
+    --GSMatch to location is 1-to-1, regular matches are one-to-many, hence GS does not use MatchLocations object
+    --no annotator needed (always the same, the mysterious Mr. #6)
+    --to match_time
+
+    Hence, semi-duplication seems a better model than inheritance that shares only abstract, text_matched, and length
+    """
+
+    def __unicode__(self):
+        return self.text_matched
+
+    annotation_id = models.IntegerField()  #Unclear if this is necessary
+    abstract = models.ForeignKey(Abstract)
+    text_matched = models.TextField(max_length=50)
+    match_length = models.IntegerField()
+    match_location = models.ForeignKey(MatchLocationsLookup)
+    match_offset = models.IntegerField()
+
+
+class MatchLocations(TimeStampedModel):
+    """
+    For typed-in matches, each match is recorded separately, with abstract-disease-location
+       gathered by Abstract.match_location(diseaseString)
+    For highlighted matches, single match recorded based on location of highlighted text
+    """
+
+    match = models.ForeignKey(Matches)
+    match_location = models.ForeignKey(MatchLocationsLookup)
+    match_offset = models.IntegerField()

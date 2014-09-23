@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
 from .views import home_page
-from .models import Abstract, Matches, MatchLocations, MatchLocationsLookup
+from .models import Abstract, Matches, MatchLocations, MatchLocationsLookup, Annotator
 
 """
 
@@ -21,12 +21,14 @@ Users are not in fixture (because not in diseaseMatcherApp but django.contrib.au
 
 *************************Test names must start with "test"***************************
 
+From Pycharm context menu, select "Run tests.py with coverage" to see how much of the app code is getting tested.
+
 """
 
 
 # Factory pattern for testing module.
 def create_annotator(username):
-    return User.objects.create(username=username, password='fun')
+    return Annotator.objects.create(username=username, password='fun')
 
 
 class HomePageTest(TestCase):
@@ -44,8 +46,8 @@ class AbstractDetailTests(TestCase):
     fixtures = ['diseaseMatcherApp_views_testdata.json']
 
     def test_detail_view_with_real_pk(self):
-        response = self.client.get(reverse('diseaseMatcherApp:abstractDetail', args=(500,)))
-        self.assertContains(response, 'Cinnamon', status_code=200)
+        response = self.client.get(reverse('diseaseMatcherApp:abstractDetail', args=(20,)))
+        self.assertContains(response, 'hyperparathyroidism', status_code=200)
 
     def test_detail_view_with_bad_pk(self):
         #Is there a way to make this a pretty error message, instead of a 404?  Seems impossible when passing args
@@ -54,9 +56,8 @@ class AbstractDetailTests(TestCase):
 
     def test_detail_view_using_fixtures(self):
         response = self.client.get(reverse('diseaseMatcherApp:abstractDetail', args=(4,)))
-        self.assertContains(response, "Neisseria")
-        self.assertEqual(response.context['abstract'].abstract_id, 100562)
-
+        self.assertContains(response, "Kniest")
+        self.assertEqual(response.context['abstract'].abstract_id, 9066888)
 
     def test_post_one_disease_entered(self):
         #TODO: the server is refusing self.client.post requests in testing, although they work in the app proper.  Why?
@@ -108,7 +109,7 @@ class ProcessMatchesTest(TestCase):
 
     def test_manual_create_and_save_match_good_data(self):
         an_abstract = Abstract.objects.get(pk=88)  #Text in title: "TP53"
-        self.assertRegexpMatches(an_abstract.title, 'TP53')
+        self.assertRegexpMatches(an_abstract.title, 'Duarte')
         match_text = "TP53"
         annotator = create_annotator("myTestUser")
         length = 13
