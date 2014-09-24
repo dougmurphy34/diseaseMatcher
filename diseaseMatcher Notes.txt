@@ -52,7 +52,7 @@ Design Principles used:
     Agile Development (Frequent functional builds)
 
 
-Status of development (9/23/2014):
+Status of development (9/24/2014):
     Game entry:
         If user is not logged in, they are walked through a login/registration process.  New registrations automatically logged in.
         Landing page receives user, navigates to single (random but new to user) abstract display with game interface.
@@ -60,6 +60,7 @@ Status of development (9/23/2014):
         User can mouse-highlight or type text (disease matches) for that abstract until 30 seconds passes, or they click "Done".
         Mouse highlight requires "confirm" click.
         User entry is rejected on client side if it doesn't match abstract title/text, is too long, or is a duplicate, with an explanatory message.
+        If typed answer matches a Gold Standard answer, user is notified by alert box (this will be improved in the next iteration).
         User can delete answer from their list if they no longer want them there.
     Data Processing:
         Results are cleaned of dupes, spaces, tabs and problematic punctuation.

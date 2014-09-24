@@ -6,6 +6,10 @@
 
 {% block extrascripts %}
     {% load sstatic %}
+    <script>
+        data_for_js = JSON.parse('{{ abstract.gold_standard_match | safe }}');
+    </script>
+
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="{% sstatic 'diseaseMatcherApp/UI-helper-abstractDetail.js' %}"></script>
 {% endblock %}
@@ -19,6 +23,17 @@
     <div id="abstractTextDiv">
         {{ abstract.abstract_text }}
     </div>
+
+    <!-- TODO: This is for testing.  Yank it when done.
+
+    <br>HERE ARE THE MATCHES:<br>
+    {% for match in abstract.gold_standard_match %}
+
+        {{ match }}
+    {% endfor %}
+
+    -->
+
     <hr>
     <form action="{% url 'diseaseMatcherApp:processMatches' %}" method="post" id="detailForm" autocomplete="off">
     {% csrf_token %}

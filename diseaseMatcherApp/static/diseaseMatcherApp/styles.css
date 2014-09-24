@@ -20,11 +20,20 @@ th {
     text-align: center;
     padding-left: 50px;
     padding-top: 20px;
+    background: #027;
+    color: yellow;
+    opacity: .7;
+    
 }
 
 .bannerUsername {
     float:right;
     padding-right: 100px;
+    font-size: large
+}
+
+.ncbi {
+    max-height: 50px;
 }
 
 .menuLink {

@@ -13,7 +13,8 @@
     {% block extrascripts %}{% endblock %}<!-- no need to load all scripts to every page -->
 </head>
 <body>
-<span class="banner">DISEASE MATCHER BANNER</span> <span class="bannerUsername">Welcome, {{ user }}</span><br><br>
+<img class="ncbi" src="http://upload.wikimedia.org/wikipedia/commons/0/07/US-NLM-NCBI-Logo.svg">
+<span class="banner">DISEASE MATCHER</span> <span class="bannerUsername">Welcome, {{ user }}</span><br><br>
 
 <a href="{% url 'diseaseMatcherApp:homePage' %}" class="menuLink">Home</a>
 <a href="{% url 'diseaseMatcherApp:userProfile' %}" class="menuLink">See User Profile</a>

@@ -8,17 +8,17 @@
     // PLAN GOES LIKE THIS:
     // 1) DONE - regex comparison of entered text to title and abstract text.  Disallow (with message) if no match.
     // 2) DONE - Display answers in a list, in black.  -->probably time to change textarea to a table
-    // 3) In request.context, pass a list of all past successful answers (ordered by frequency) to view.
+    // 3) In request.context, pass a list of gold standard answers to javascript.
     // 4) Every 5ish seconds, add the top answer to "AI answers".  (This means max possible answers is LENGTH_OF_GAME_IN_SECONDS / 5)
     // 5) If an answer is entered by both user and AI, change its color to green.
     // 6) Update instructions - zero (?) points per you-only answer, 10 points for match-with-AI answer.
     // 7) Change models.py to reflect new scoring system.  Change user profiles to match new work history and ranking system.
-    // 8) Deal with the few/no answer yet problem: use capitalized words/phrases?  Most common words > 6 chars?
 
 LENGTH_OF_GAME_IN_SECONDS = 300;
 
 var answerDict = {};//Format {"theTextTyped" : secondsInt}
 var selectDict = {};//Format {"selectedText" : {"secondsInt": 8, "titleText": 1, "offset": 32}}
+// data_for_js Format [{"pk":781,"model":"diseaseMatcherApp.goldstandardmatch","fields":{"match_offset":10,"abstract":100,"text_matched":"coronaryheartdisease","match_location":1,"match_length":22,"annotation_id":112634}}]
 
 function startCountdown(whatsLeft) {
     //vars in document.ready are not in scope here
@@ -56,6 +56,19 @@ function trim_evil_characters(input_string) {
 
 }
 
+function test_for_gold_standard_text_match(passedText) {
+    //TODO: similar function for mouse entry.
+
+    for (i in data_for_js) {
+        if (data_for_js.hasOwnProperty(i)) {
+            if (data_for_js[i]["fields"]["text_matched"] == passedText) {
+                alert('You matched a Gold Standard answer!');
+
+            }
+        }
+
+    }
+}
 
 function test_for_matches(userEnteredText) {
 
@@ -114,8 +127,10 @@ function moveText(e) {
             //record answer and time to our associative array
             answerDict[inputText] = LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft);
 
-            updateUI();
+            //TODO: Use this better
+            test_for_gold_standard_text_match(inputText);
 
+            updateUI();
 
         }
         else {

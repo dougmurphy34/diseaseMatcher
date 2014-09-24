@@ -4,6 +4,7 @@ from datetime import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.core import serializers
 from django.utils import timezone
 
 
@@ -30,6 +31,18 @@ class Abstract(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    def gold_standard_match(self):
+        """
+        Abstract Detail View calls this to get the full list of GS matches
+        This is passed to response.context as JSON
+        """
+        #TODO: Tighten up this data to only necessaries.  We don't need "model", for instance.
+        gs_queryset = GoldStandardMatch.objects.filter(abstract=self)
+        data = serializers.serialize('json', gs_queryset)
+
+        return data
+
 
     def match_location(self, diseaseString):
         """
