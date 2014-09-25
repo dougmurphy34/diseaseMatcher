@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-import random
 import json
 
 #TODO: Replace get() calls with get_object_or_404
@@ -13,7 +12,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from .models import Matches, Abstract, MatchLocations, MatchLocationsLookup, Annotator
+from .models import Matches, Abstract, MatchLocations, MatchLocationsLookup, Annotator, GoldStandardMatch
 
 '''Principles of Views
 
@@ -152,6 +151,7 @@ def process_registration(request):
 
 @login_required
 def process_matches(request):
+    #TODO: refactor the heck out of this monstrosity
     #TODO: Build better test for process_matches
 
     #List of all words entered, in a space-delimited string
@@ -160,10 +160,10 @@ def process_matches(request):
         answer_time_dict = json.loads(request.POST.get('userTypedMatches'))
         selected_text_time_dict = json.loads(request.POST.get('userHighlightedMatches'))
     except:
-        #TODO: Better error handling for bad POST data
-        return HttpResponse("Whoops!  Error.  I will handle this better later.")
+        #TODO: Better error handling for bad POST data - add variables to feedback?
+        raise Exception('Problem with post data')
 
-    annotator_pk = User.objects.get(pk=request.user.id)
+    annotator_pk = Annotator.objects.get(pk=request.user.id)
     abstract_pk = Abstract.objects.get(pk=which_abstract)
 
     answers = []
@@ -177,18 +177,25 @@ def process_matches(request):
     for answer in answers:
         clean_answer = answer.strip()
 
+    ###  Begin processing text-entered answer here
         if 51 > len(clean_answer) > 0:
             if clean_answer in answer_time_dict:#TODO: This will cause a silent error when both ifs false (happens when user submits, then hits back button.  Prevent this?)
 
-                this_match_time = answer_time_dict[clean_answer]
+                this_match_time = answer_time_dict[clean_answer]["secondsInt"]
+                temp_int_holder = answer_time_dict[clean_answer]["goldStandard"]  #TODO: find the actual GS with location/offset match instead of just first.  Do this inside offset_list loop.  Change models to move gold_standard_match to MatchLocations (not Matches)
+                if temp_int_holder == 0:
+                    gsmatch = None
+                else:
+                    gsmatch = GoldStandardMatch.objects.get(pk=temp_int_holder)
 
                 offset_list = abstract_pk.match_location(clean_answer)
 
                 if offset_list[0][0] != -1:
                     try:
                         #create Match record here.  Fields: abstract, annotator, text_matches, match_length, match_time
-                        match = Matches.objects.create(abstract=abstract_pk, annotator = annotator_pk, text_matched=clean_answer,
-                                                       match_length=len(clean_answer), match_time=this_match_time)
+                        match = Matches.objects.create(abstract=abstract_pk, annotator=annotator_pk, text_matched=clean_answer,
+                                                       match_length=len(clean_answer), match_time=this_match_time,
+                                                       gold_standard_match=gsmatch)
 
                         match.save()
 
@@ -204,16 +211,27 @@ def process_matches(request):
 
                                 where_we_matched.save()
                     except:
-                        #TODO: Better error handling for database fail on match create
-                        return HttpResponse("Something went screwy creating text-entered match records in the database.")
+                        raise Exception("Something went screwy creating text-entered match records in the database.  " + str(offset_list[0][0]))
+
+            ### Begin processing mouse-selected answers here
             elif clean_answer in selected_text_time_dict:
+
+                this_match_time = selected_text_time_dict[clean_answer]['secondsInt']
+                temp_int_holder = selected_text_time_dict[clean_answer]["goldStandard"]
+
+                if temp_int_holder == 0:
+                    gsmatch = None
+                else:
+                    gsmatch = GoldStandardMatch.objects.get(pk=temp_int_holder)
+
                 try:
                     #process selected test.  Format {"selectedText" : {"seconds": 8, "titleText": 1, "offset": 32}}
                     match = Matches.objects.create(abstract=abstract_pk, annotator=annotator_pk, text_matched=clean_answer,
-                                                   match_length=len(clean_answer), match_time=selected_text_time_dict[clean_answer]['secondsInt'])
+                                                   match_length=len(clean_answer), match_time=this_match_time,
+                                                   gold_standard_match=gsmatch)
                     match.save()
                 except:
-                    return HttpResponse("Error on create match for highlight text")
+                    raise Exception("Error on create match for higlighted text  " + str(selected_text_time_dict))
                 try:
                     this_match_location = MatchLocationsLookup.objects.get(pk=selected_text_time_dict[clean_answer]['titleTextInt'])
 
@@ -221,8 +239,7 @@ def process_matches(request):
                                                                      match_offset=selected_text_time_dict[clean_answer]['offset'])
                     where_we_matched.save()
                 except:
-                        error_string = "Something went screwy creating higlight-based match LOCATION records in the database.  " + str(clean_answer) + ", " + str(selected_text_time_dict[clean_answer])
-                        return HttpResponse(error_string)
+                    raise Exception("Something went screwy creating higlight-based match LOCATION records in the database.  " + str(clean_answer) + ", " + str(selected_text_time_dict[clean_answer]))
 
     return HttpResponseRedirect(reverse('diseaseMatcherApp:playAgain'))
 

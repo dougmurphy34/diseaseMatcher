@@ -37,12 +37,11 @@ class Abstract(models.Model):
         Abstract Detail View calls this to get the full list of GS matches
         This is passed to response.context as JSON
         """
-        #TODO: Tighten up this data to only necessaries.  We don't need "model", for instance.
+        #TODO: Tighten up this data to only necessaries.  We don't need "model", for instance.  Is this removable?  values_list is only for fields inside GoldStandardMatch objects.
         gs_queryset = GoldStandardMatch.objects.filter(abstract=self)
         data = serializers.serialize('json', gs_queryset)
 
         return data
-
 
     def match_location(self, diseaseString):
         """
@@ -120,6 +119,11 @@ class OccupationLookup(models.Model):
     occupation = models.TextField(max_length=50)
 
 
+#Lookup table.  Describes which field had the text match.  Current options: Title, Abstract Text.
+class MatchLocationsLookup(models.Model):
+    location = models.TextField(max_length=25)
+
+
 class UserDetails(TimeStampedModel):
     age = models.IntegerField(max_length=3, blank=True)
     gender = models.ForeignKey(GenderLookup, blank=True)
@@ -127,22 +131,6 @@ class UserDetails(TimeStampedModel):
     purpose_for_playing = models.ForeignKey(PurposeForPlayingLookup, blank=True)
     education = models.ForeignKey(EducationLookup, blank=True)
 
-
-class Matches(TimeStampedModel):
-
-    def __unicode__(self):
-        return self.text_matched
-
-    abstract = models.ForeignKey(Abstract)
-    annotator = models.ForeignKey(User)
-    text_matched = models.TextField(max_length=50)
-    match_length = models.IntegerField()
-    match_time = models.IntegerField()  #How many seconds into the game did the user make the match?
-
-
-#Lookup table.  Describes which field had the text match.  Current options: Title, Abstract Text.
-class MatchLocationsLookup(models.Model):
-    location = models.TextField(max_length=25)
 
 class GoldStandardMatch(models.Model):
     """
@@ -163,6 +151,33 @@ class GoldStandardMatch(models.Model):
     match_length = models.IntegerField()
     match_location = models.ForeignKey(MatchLocationsLookup)
     match_offset = models.IntegerField()
+
+
+class Matches(TimeStampedModel):
+
+    """
+    Thoughts on matches in general:
+
+    Difference between text matching text, mouse highlight matching text/offset, and either matching GS make this model suboptimal
+    depending on requirements (save non-GS matches?  Just record first text match for text matches?), might need to change model.
+
+    One possibility: this is a concrete class, but it is inherited by another class that adds gold_standard_match
+    This would be ideal if we needed to use the data (GS matches vs. text matches) for different thing.
+
+    Closing thought: Real impact of this change would likely be so small, this may just be an intellectual exercise.
+    Could get same effect with a WHERE clause when sorting out data.
+
+    """
+
+    def __unicode__(self):
+        return self.text_matched
+
+    abstract = models.ForeignKey(Abstract)
+    annotator = models.ForeignKey(Annotator)  #User or Annotator?  This is a minor question.
+    text_matched = models.TextField(max_length=50)
+    match_length = models.IntegerField()
+    match_time = models.IntegerField()  #How many seconds into the game did the user make the match?
+    gold_standard_match = models.ForeignKey(GoldStandardMatch, blank=True, null=True)
 
 
 class MatchLocations(TimeStampedModel):

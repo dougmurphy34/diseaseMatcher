@@ -8,16 +8,17 @@
     // PLAN GOES LIKE THIS:
     // 1) DONE - regex comparison of entered text to title and abstract text.  Disallow (with message) if no match.
     // 2) DONE - Display answers in a list, in black.  -->probably time to change textarea to a table
-    // 3) In request.context, pass a list of gold standard answers to javascript.
-    // 4) Every 5ish seconds, add the top answer to "AI answers".  (This means max possible answers is LENGTH_OF_GAME_IN_SECONDS / 5)
-    // 5) If an answer is entered by both user and AI, change its color to green.
-    // 6) Update instructions - zero (?) points per you-only answer, 10 points for match-with-AI answer.
-    // 7) Change models.py to reflect new scoring system.  Change user profiles to match new work history and ranking system.
+    // 3) DONE - In request.context, pass a list of gold standard answers to javascript.
+    // 4) DONE - Pass gold standard matched (or blank if none) back to views.py
+    // 5) (AI match timing; see game design doc)
+    // 6) If an answer is entered by both user and AI, change its color to green.
+    // 7) Update instructions - zero (?) points per you-only answer, 10 points for match-with-AI answer.
+    // 8) Change models.py to reflect new scoring system.  Change user profiles to match new work history and ranking system.
 
 LENGTH_OF_GAME_IN_SECONDS = 300;
 
-var answerDict = {};//Format {"theTextTyped" : secondsInt}
-var selectDict = {};//Format {"selectedText" : {"secondsInt": 8, "titleText": 1, "offset": 32}}
+var answerDict = {};//Format {"theTextTyped" : {"secondsInt":8, "goldStandard": 0|442}}
+var selectDict = {};//Format {"selectedText" : {"secondsInt": 8, "titleText": 1, "offset": 32, "goldStandard": 0|521 }}
 // data_for_js Format [{"pk":781,"model":"diseaseMatcherApp.goldstandardmatch","fields":{"match_offset":10,"abstract":100,"text_matched":"coronaryheartdisease","match_location":1,"match_length":22,"annotation_id":112634}}]
 
 function startCountdown(whatsLeft) {
@@ -45,8 +46,7 @@ function trim_evil_characters(input_string) {
         //***These characters pose no problem: , . - / ; ' " ALSO () in pairs
         //***These break things: uneven parentheses
 
-        //Trimming punctuation passes sanitized answers to be matched vs. actual text, so it won't find any matches.  This is usually fine.
-        //TODO: On rejecting dangerous input pop up a fadeaway warning about avoiding punctuation. -- mouse matches only
+        //Trimming punctuation passes sanitized answers to be matched vs. actual text, which could cause missed punctuation-heavy matches.  This is usually fine.
         var no_paren_family = input_string.replace(/[(){}\[\]]+/g,"");
         //no_punctuation = no_paren_family.replace(/[\.\?!,]+/g,"");
         var no_leads = no_paren_family.replace(/^[ \t]+/, "");
@@ -56,18 +56,40 @@ function trim_evil_characters(input_string) {
 
 }
 
-function test_for_gold_standard_text_match(passedText) {
-    //TODO: similar function for mouse entry.
+function notify_gold_standard_match() {
+    feedbackSpan = $('#goldStandardFeedback');
+    feedbackSpan.fadeIn('fast');
+    feedbackSpan.text('Gold Standard match!').css('backgroundColor',"gold").fadeOut(1800);
+}
 
+function test_for_gold_standard_typed_text_match(passedText) {
     for (i in data_for_js) {
         if (data_for_js.hasOwnProperty(i)) {
             if (data_for_js[i]["fields"]["text_matched"] == passedText) {
-                alert('You matched a Gold Standard answer!');
+                //Send back the PK of the first Gold Standard we matched
+                notify_gold_standard_match();
+                return data_for_js[i]["pk"];
 
             }
         }
-
     }
+
+    //No Gold Standard match, report a zero
+    return 0;
+}
+
+function check_for_gold_standard_selected_text_match(passedText, offset) {
+    for (i in data_for_js) {
+        if (data_for_js.hasOwnProperty(i)) {
+            if (data_for_js[i]["fields"]["text_matched"] == passedText && data_for_js[i]["fields"]["match_offset"] == offset) {
+                notify_gold_standard_match();
+                return data_for_js[i]["pk"];
+            }
+        }
+    }
+
+    //No Gold Standard match, report a zero
+    return 0;
 }
 
 function test_for_matches(userEnteredText) {
@@ -124,11 +146,11 @@ function moveText(e) {
 
         if (no_dupe(inputText)) {//prevent dupes, which would reset time entered to later time
             timeLeft = secondsLeft.html();
-            //record answer and time to our associative array
-            answerDict[inputText] = LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft);
 
-            //TODO: Use this better
-            test_for_gold_standard_text_match(inputText);
+            goldStandardPk = test_for_gold_standard_typed_text_match(inputText);
+
+            //record answer and time to our associative array
+            answerDict[inputText] = {"secondsInt": LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft), "goldStandard": goldStandardPk};
 
             updateUI();
 
@@ -181,6 +203,13 @@ function addTextFromMouseUp(textSelection) {
 
             //Offset seems to start at 0 in title, and at 9 in text.  Why 9?
             offset = start - 9;
+
+             //Add length of title to offset, because that's how the Gold Standard annotations do it.
+            offset += abstractTitle.text().length;
+
+            //And then, for compatibility with the mysterious Gold Standard annotations, subtract 14.
+            //  Must represent whitespace in original source that gets stripped here.
+            offset -= 14;
         }
         else {
             //We are in abstract title.
@@ -195,6 +224,8 @@ function addTextFromMouseUp(textSelection) {
         offset += lendiff;
 
 
+
+
         var timeLeft = secondsLeft.html();
 
         //clean up result
@@ -202,8 +233,11 @@ function addTextFromMouseUp(textSelection) {
 
         if (no_dupe(cleanText)) {//prevent dupes, which would reset time entered to later time
 
+
+            goldStandardPk = check_for_gold_standard_selected_text_match(cleanText, offset);
+
             //record answer and time to our associative array
-            selectDict[cleanText] = {"secondsInt": LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft), "titleTextInt": titleTextInt, "offset": offset};
+            selectDict[cleanText] = {"secondsInt": LENGTH_OF_GAME_IN_SECONDS - parseInt(timeLeft), "titleTextInt": titleTextInt, "offset": offset, "goldStandard": goldStandardPk};
 
             updateUI();
         }

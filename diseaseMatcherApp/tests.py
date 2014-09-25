@@ -117,7 +117,7 @@ class ProcessMatchesTest(TestCase):
         location = MatchLocationsLookup.objects.get(pk=2)
         time = 6
         this_match = Matches.objects.create(abstract=an_abstract, annotator=annotator, text_matched=match_text,
-                                            match_length=length, match_time=time)
+                                            match_length=length, match_time=time, gold_standard_match=None)
         this_match.save()
         this_location = MatchLocations.objects.create(match=this_match, match_location=location, match_offset=offset)
         this_location.save()

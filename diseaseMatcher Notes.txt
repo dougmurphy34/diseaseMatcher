@@ -60,25 +60,27 @@ Status of development (9/24/2014):
         User can mouse-highlight or type text (disease matches) for that abstract until 30 seconds passes, or they click "Done".
         Mouse highlight requires "confirm" click.
         User entry is rejected on client side if it doesn't match abstract title/text, is too long, or is a duplicate, with an explanatory message.
-        If typed answer matches a Gold Standard answer, user is notified by alert box (this will be improved in the next iteration).
+        User is notified of Gold Standard matches as they happen.
         User can delete answer from their list if they no longer want them there.
     Data Processing:
         Results are cleaned of dupes, spaces, tabs and problematic punctuation.
         Results are re-checked on server side for accuracy vs. title and text.  Location and offset are calculated for typed answers.
         Database records match text, length, location (title or text), offset, annotator, abstract, time into game answer was entered.
+        User matches are associated with equivalent Gold Standard answers in the database (first match for text, specific GS match for mouse).
         For typed answers, each instance of typed text is recorded (offset and location).  For mouse selected, just the one actually selected is recorded.
     Post-game:
         User is given opportunity to play again or log out.
         User can view play history and ranking on user profile page.
 
 Next steps:
-    AI partner - match against Gold Standard answers, instead of just text.  Both?
+    Record ALL gold standard answers when text-entered, not just the first.
+    AI partner
     Incorporate scoring system for matches and rankings.
-    Interface for additional registration data - age, gender, occupation, purpose for playing, education  (all optional)
 
 Future direction:
     Bifurcate game into SpeedMatcher and DeepMatcher (see Game Design.txt).
     Build a pretty GUI - branding, images, better instructions to the user, better feedback.  Borrow some of this from Mark2Cure.org.
+    Interface for additional registration data - age, gender, occupation, purpose for playing, education  (all optional)
     Modular layout that supports mobile using CSS media queries.
     Turn on atomic transactions (Two Scoops 6.4) - make sure this works with my table types (6.4.4).
 

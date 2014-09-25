@@ -24,16 +24,6 @@
         {{ abstract.abstract_text }}
     </div>
 
-    <!-- TODO: This is for testing.  Yank it when done.
-
-    <br>HERE ARE THE MATCHES:<br>
-    {% for match in abstract.gold_standard_match %}
-
-        {{ match }}
-    {% endfor %}
-
-    -->
-
     <hr>
     <form action="{% url 'diseaseMatcherApp:processMatches' %}" method="post" id="detailForm" autocomplete="off">
     {% csrf_token %}
@@ -68,6 +58,7 @@
                 </tbody>
 
             </table>
+            <span id="goldStandardFeedback" style="font-style:italic"></span>
         </div>
 
 

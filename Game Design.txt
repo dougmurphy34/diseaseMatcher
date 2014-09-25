@@ -6,8 +6,8 @@ User tries to classify abstract to single disease.  Once they have picked the sa
     on to the next abstract.  Points scored based on number of abstracts classified in 60 seconds.
 
 AI WIZARDRY:
-Top 2 answers are preloaded from DB.  50% of the time the AI is "faster" than the user - as soon as the user picks one
-    of those two answers, they get a match and move on.  Other 50% the AI is "slower" - capability of matching kicks in
+All(?) GS answers are preloaded from DB.  50% of the time the AI is "faster" than the user - as soon as the user picks one
+    of those answers, they get a match and move on.  Other 50% the AI is "slower" - capability of matching kicks in
     at a random time 4-7 seconds from load of abstract.
 
 BENEFITS TO THIS MODEL:
@@ -28,7 +28,7 @@ User tries to pick the same disease-phrases as partner.  User tries to get to th
     time.  Game ends on third match or 60 seconds elapsed.  Score based on speed to third match.
 
 AI WIZARDRY:
-Top 6 answers pulled from database.  At a random time every 3-5 seconds one of the six answers is chosen at random
+Gold Standard answers pulled from database.  At a random time every 3-5 seconds one of the GS answers is chosen at random
     and "activated".  Match is recorded as soon as a phrase is user-entered and AI-activated.
 
 BENEFITS TO THIS MODEL:
