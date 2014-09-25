@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
 from .views import home_page
-from .models import Abstract, Matches, MatchLocations, MatchLocationsLookup, Annotator
+from .models import Abstract, Matches, MatchLocations, Annotator
 
 """
 
@@ -114,7 +114,7 @@ class ProcessMatchesTest(TestCase):
         annotator = create_annotator("myTestUser")
         length = 13
         offset = 73
-        location = MatchLocationsLookup.objects.get(pk=2)
+        location = 2
         time = 6
         this_match = Matches.objects.create(abstract=an_abstract, annotator=annotator, text_matched=match_text,
                                             match_length=length, match_time=time, gold_standard_match=None)

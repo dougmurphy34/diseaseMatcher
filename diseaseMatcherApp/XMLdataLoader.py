@@ -27,7 +27,7 @@ import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'diseaseMatcher.settings'
 
 
-from diseaseMatcherApp.models import Abstract, GoldStandardMatch, MatchLocationsLookup
+from diseaseMatcherApp.models import Abstract, GoldStandardMatch
 
 
 #my_conn = _mysql.connect(host="localhost", user="root", passwd="t0blaive", db="diseasematcherdb")
@@ -83,7 +83,7 @@ for abstract in abstract_list:
         length = annotation.find('location').get('length')
         match_text = annotation.find('text').text
         GoldStandardMatch.objects.create(abstract=curr_abstract, text_matched=match_text, annotation_id=annotation_id,
-                                         match_location=MatchLocationsLookup.objects.get(pk=1), match_offset=offset,
+                                         match_location=1, match_offset=offset,
                                          match_length=length)
 
 
@@ -95,7 +95,7 @@ for abstract in abstract_list:
         length = annotation.find('location').get('length')
         match_text = annotation.find('text').text
         GoldStandardMatch.objects.create(abstract=curr_abstract, text_matched=match_text, annotation_id=annotation_id,
-                                         match_location=MatchLocationsLookup.objects.get(pk=2), match_offset=offset,
+                                         match_location=2, match_offset=offset,
                                          match_length=length)
 
 

@@ -103,33 +103,57 @@ class Annotator(User):
                 return random_number
 
 
-class GenderLookup(models.Model):
-    gender = models.TextField(max_length=6)
-
-
-class EducationLookup(models.Model):
-    education_level = models.TextField(max_length=15)
-
-
-class PurposeForPlayingLookup(models.Model):
-    purpose = models.TextField(max_length=20)
-
-
-class OccupationLookup(models.Model):
-    occupation = models.TextField(max_length=50)
-
-
-#Lookup table.  Describes which field had the text match.  Current options: Title, Abstract Text.
-class MatchLocationsLookup(models.Model):
-    location = models.TextField(max_length=25)
-
-
 class UserDetails(TimeStampedModel):
+
+    GENDERS = (
+        (1, "Male"),
+        (2, "Female")
+    )
+
+    EDUCATION_CHOICES = (
+        (0, "Some elementary"),
+        (1, "Finished elementary"),
+        (2, "Some high school"),
+        (3, "Finished high school"),
+        (4, "Some community college"),
+        (5, "Finished community college"),
+        (6, "Some 4-year college"),
+        (7, "Finished 4-year college"),
+        (8, "Some masters program"),
+        (9, "Finished masters program"),
+        (10, "Some PhD program"),
+        (11, "Finished PhD program")
+    )
+
+    PURPOSE_FOR_PLAYING_CHOICES = (
+        (1, "Help Science"),
+        (2, "Entertainment"),
+        (3, "Knowledge is power"),
+        (4, "Curiosity"),
+        (5, "Other")
+    )
+
+    OCCUPATION_CHOICES = (
+        (1, "Unemployed"),
+        (2, "Retired"),
+        (3, "Student"),
+        (4, "Technical"),
+        (5, "Science"),
+        (6, "Computer"),
+        (7, "Business"),
+        (8, "Education"),
+        (9, "Art"),
+        (10, "Labor"),
+        (11, "Finance"),
+        (12, "Legal"),
+        (13, "Other")
+    )
+
     age = models.IntegerField(max_length=3, blank=True)
-    gender = models.ForeignKey(GenderLookup, blank=True)
-    occupation = models.ForeignKey(OccupationLookup, blank=True)
-    purpose_for_playing = models.ForeignKey(PurposeForPlayingLookup, blank=True)
-    education = models.ForeignKey(EducationLookup, blank=True)
+    gender = models.IntegerField(choices=GENDERS, blank=True)
+    occupation = models.IntegerField(choices=OCCUPATION_CHOICES, blank=True)
+    purpose_for_playing = models.IntegerField(choices=PURPOSE_FOR_PLAYING_CHOICES, blank=True)
+    education = models.IntegerField(choices=EDUCATION_CHOICES, blank=True)
 
 
 class GoldStandardMatch(models.Model):
@@ -145,11 +169,17 @@ class GoldStandardMatch(models.Model):
     def __unicode__(self):
         return self.text_matched
 
+    #This is violating "don't repeat yourself" (also in Match Locations), but I don't see a way around it.
+    LOCATIONS = (
+        (1, "Title"),
+        (2, "Abstract Text")
+    )
+
     annotation_id = models.IntegerField()  #Unclear if this is necessary
     abstract = models.ForeignKey(Abstract)
     text_matched = models.TextField(max_length=50)
     match_length = models.IntegerField()
-    match_location = models.ForeignKey(MatchLocationsLookup)
+    match_location = models.IntegerField(choices=LOCATIONS)
     match_offset = models.IntegerField()
 
 
@@ -187,6 +217,11 @@ class MatchLocations(TimeStampedModel):
     For highlighted matches, single match recorded based on location of highlighted text
     """
 
+    LOCATIONS = (
+        (1, "Title"),
+        (2, "Abstract Text")
+    )
+
     match = models.ForeignKey(Matches)
-    match_location = models.ForeignKey(MatchLocationsLookup)
+    match_location = models.IntegerField(choices=LOCATIONS)
     match_offset = models.IntegerField()

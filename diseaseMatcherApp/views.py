@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from .models import Matches, Abstract, MatchLocations, MatchLocationsLookup, Annotator, GoldStandardMatch
+from .models import Matches, Abstract, MatchLocations, Annotator, GoldStandardMatch
 
 '''Principles of Views
 
@@ -202,7 +202,7 @@ def process_matches(request):
                         for offset in offset_list:
                             #format of offset variable will be [HowDeepInTextAppears, MatchLocationAs0or1].  No match = [-1,-1]
                             if offset[0] != -1:
-                                this_match_location = MatchLocationsLookup.objects.get(pk=offset[1])
+                                this_match_location = offset[1]
 
                                 #Create MatchLocations here.  Fields: match, match_location, match_offset
 
@@ -233,7 +233,7 @@ def process_matches(request):
                 except:
                     raise Exception("Error on create match for higlighted text  " + str(selected_text_time_dict))
                 try:
-                    this_match_location = MatchLocationsLookup.objects.get(pk=selected_text_time_dict[clean_answer]['titleTextInt'])
+                    this_match_location = selected_text_time_dict[clean_answer]['titleTextInt']
 
                     where_we_matched = MatchLocations.objects.create(match=match, match_location=this_match_location,
                                                                      match_offset=selected_text_time_dict[clean_answer]['offset'])

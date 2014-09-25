@@ -32,7 +32,6 @@ Steps to Deploy:
     Populate database
         Drop any tables prefixed with "diseaseMatcherApp"
         manage.py syncdb
-        Populate_lookup_tables.sql
         XMLdataLoader.py (change path to source file if not on Doug's machine)
 
 Testing Tips:
@@ -43,7 +42,7 @@ Testing Tips:
         python manage.py dumpdata diseaseMatcherApp --indent=4 > diseaseMatcherApp/fixtures/diseaseMatcherApp_views_testdata.json
 
     Changes to Abstracts in fixtures (currently the Gold Standard 100)
-        If you change the abstracts, you're gonna have a bad time.
+        If you change the abstracts, you're gonna have a bad time.  (Hard-coded text checks to see if loading properly).
 
 Design Principles used:
     Unit and integration testing using unittest with frameworks
@@ -52,7 +51,7 @@ Design Principles used:
     Agile Development (Frequent functional builds)
 
 
-Status of development (9/24/2014):
+Status of development (9/25/2014):
     Game entry:
         If user is not logged in, they are walked through a login/registration process.  New registrations automatically logged in.
         Landing page receives user, navigates to single (random but new to user) abstract display with game interface.
