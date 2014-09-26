@@ -159,12 +159,31 @@ class UserDetails(TimeStampedModel):
 class GoldStandardMatch(models.Model):
     """
     This seems a bit like repeating myself with Matches, but differences:
-    --GSMatch to location is 1-to-1, regular matches are one-to-many, hence GS does not use MatchLocations object
+    --GSMatch to location is 1-to-1, regular matches are one-to-many (for text matches), hence GS does not use MatchLocations object
+        --This is artificial and should probably not be this way.
     --no annotator needed (always the same, the mysterious Mr. #6)
-    --to match_time
+        --#6 is still an annotator, just need to create him when creating DB
+    --no match_time
+        --This is minor; can use match_time of zero
 
     Hence, semi-duplication seems a better model than inheritance that shares only abstract, text_matched, and length
     """
+
+
+    '''
+    The Gold Standard Problem:
+
+    First: there is no problem with mouse selection.  Match (as defined by models.Matches) and GoldStandardMatch are one-to-one
+    But: A text match gets one Matches object and several MatchLocations objects.  GoldStandardMatch does not use MatchLocations, and
+            GoldStandardMatch to text is many-to-one.
+    So: There's no place to record all the GSMatches (when >1) since this is on the Match, and not Match Location object.
+    Possible solution: record GS matches on Match Location object?  YES, THIS MAKES SENSE.
+
+    Next question: Do GSMatch's length and location need to be moved to MatchLocations?
+    Corollary: Should GSMatch then be folded into Matches?
+    If so: rewrite models, then XMLdataLoader, then UI-helper.js, then views.  That's doable.
+
+    '''
 
     def __unicode__(self):
         return self.text_matched

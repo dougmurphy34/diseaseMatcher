@@ -86,7 +86,6 @@ for abstract in abstract_list:
                                          match_location=1, match_offset=offset,
                                          match_length=length)
 
-
     for annotation in annotation_text_list:
         #Match in abstract text, MatchLocationsObject pk=2
 

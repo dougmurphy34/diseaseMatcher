@@ -154,18 +154,26 @@ def process_matches(request):
     #TODO: refactor the heck out of this monstrosity
     #TODO: Build better test for process_matches
 
+    '''
+    This is the action on the abstractDetail.html form post.  It takes game answers and puts them in the database.
+    Text-entered answers and mouse-selected answers are handled differently, because they are many-to-one and one-to-one respectively.
+
+
+    :param request:
+    :return:
+    '''
+
     #List of all words entered, in a space-delimited string
     try:
         which_abstract = request.POST.get('abstract_pk')
         answer_time_dict = json.loads(request.POST.get('userTypedMatches'))
         selected_text_time_dict = json.loads(request.POST.get('userHighlightedMatches'))
     except:
-        #TODO: Better error handling for bad POST data - add variables to feedback?
-        raise Exception('Problem with post data')
+        raise Exception('Problem with post data.  abstract_pk = ' + str(request.POST.get("abstract_pk")) + ', userTypedMatches = ' +
+                        str(request.POST.get("userTypedMatches")) + ', userHighlightedMatches = ' + str(request.POST.get("userHighlightedMatches")))
 
     annotator_pk = Annotator.objects.get(pk=request.user.id)
     abstract_pk = Abstract.objects.get(pk=which_abstract)
-
     answers = []
 
     for key in answer_time_dict:
@@ -183,11 +191,22 @@ def process_matches(request):
 
                 this_match_time = answer_time_dict[clean_answer]["secondsInt"]
                 temp_int_holder = answer_time_dict[clean_answer]["goldStandard"]  #TODO: find the actual GS with location/offset match instead of just first.  Do this inside offset_list loop.  Change models to move gold_standard_match to MatchLocations (not Matches)
+
+                '''
+                WORKPLAN: see "The Gold Standard Problem" in Models before starting
+                1) test_for_gold_standard_typed_text_match grabs first GS match, could easily grab all
+                2) Get all GS where text and abstract ID match; pull all location data
+                3) Create MatchLocations based on this.  WAIT - are we not already recording these, because they're also text matches?  Find the IF that turns that off.
+
+                '''
+
+
                 if temp_int_holder == 0:
                     gsmatch = None
                 else:
                     gsmatch = GoldStandardMatch.objects.get(pk=temp_int_holder)
 
+                #This function of the Abstract object returns all match locations based on string matching
                 offset_list = abstract_pk.match_location(clean_answer)
 
                 if offset_list[0][0] != -1:
