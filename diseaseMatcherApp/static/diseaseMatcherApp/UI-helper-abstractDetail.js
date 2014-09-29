@@ -15,7 +15,7 @@
     // 7) Update instructions - zero (?) points per you-only answer, 10 points for match-with-AI answer.
     // 8) Change models.py to reflect new scoring system.  Change user profiles to match new work history and ranking system.
 
-LENGTH_OF_GAME_IN_SECONDS = 300;
+LENGTH_OF_GAME_IN_SECONDS = 30;
 
 var answerDict = {};//Format {"theTextTyped" : {"secondsInt":8, "goldStandard": 0|442}}
 var selectDict = {};//Format {"selectedText" : {"secondsInt": 8, "titleText": 1, "offset": 32, "goldStandard": 0|521 }}

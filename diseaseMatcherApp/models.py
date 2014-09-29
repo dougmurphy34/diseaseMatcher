@@ -183,6 +183,8 @@ class GoldStandardMatch(models.Model):
     Corollary: Should GSMatch then be folded into Matches?
     If so: rewrite models, then XMLdataLoader, then UI-helper.js, then views.  That's doable.
 
+    How do we do matching now?
+
     '''
 
     def __unicode__(self):
