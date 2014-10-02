@@ -19,5 +19,5 @@ urlpatterns = patterns('',
 
 #Adding this to help heroku serve up my static files with gunicorn
 urlpatterns += patterns('',
-        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+        (r'^static/(?P<path>.*)$', 'django.contrib.staticfiles.views', {'document_root': settings.STATIC_ROOT}),
     )
