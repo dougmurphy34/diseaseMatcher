@@ -102,5 +102,5 @@ STATIC_ROOT = 'diseaseMatcherApp'
 PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_PATH, 'static'),
+    os.path.join(PROJECT_PATH, 'static/diseaseMatcherApp'),
 )
