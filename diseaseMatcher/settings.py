@@ -101,6 +101,7 @@ STATIC_ROOT = '/diseaseMatcherApp/'
 #https://devcenter.heroku.com/articles/django-assets
 PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 
+#TRYING BASE_DIR instead of PROJECT_PATH to get rid of "/app/
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_PATH, 'diseaseMatcherApp/static'),
+    os.path.join(BASE_DIR, 'diseaseMatcherApp/static/diseaseMatcherApp'),
 )
