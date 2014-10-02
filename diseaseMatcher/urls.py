@@ -17,7 +17,10 @@ urlpatterns = patterns('',
 
 )
 
-#Adding this to help heroku serve up my static files with gunicorn.  Not 100% clear if this is necessary.
+'''Adding this to help heroku serve up my static files with gunicorn.  Not 100% clear if this is necessary.
+    Also, this gives a "Could not import django.contrib.staticfiles.views. View is not callable."
+
 urlpatterns += patterns('',
         (r'^static/(?P<path>.*)$', 'django.contrib.staticfiles.views', {'document_root': settings.STATIC_ROOT}),
     )
+'''
