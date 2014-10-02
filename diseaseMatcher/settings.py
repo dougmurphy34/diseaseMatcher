@@ -94,5 +94,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-#this is needed for sstatic template tag
+#this is needed for sstatic template tag.  TODO: REMOVE SLASHES FOR COMPATIBILITY WITH dj-static and Heroku?
 STATIC_ROOT = '/diseaseMatcherApp/'
+
+#I think this is redundant with BASE_DIR, but for now I'm following directions exactly from:
+#https://devcenter.heroku.com/articles/django-assets
+PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
+
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_PATH, 'static'),
+)
