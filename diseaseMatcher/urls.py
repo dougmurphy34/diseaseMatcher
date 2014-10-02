@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from diseaseMatcherApp import views
+from diseaseMatcher import settings
 
 from django.contrib import admin
 admin.autodiscover()
@@ -15,3 +16,8 @@ urlpatterns = patterns('',
     url(r'^accounts/logout/$', views.logout_view, name='logout')
 
 )
+
+#Adding this to help heroku serve up my static files with gunicorn
+urlpatterns += patterns('',
+        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+    )
