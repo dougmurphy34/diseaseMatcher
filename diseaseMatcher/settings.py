@@ -20,12 +20,13 @@ LOGIN_REDIRECT_URL = '/'
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '6#u$b=vym60$%77(mz5j=qde!iutl)wjs7()*el4u5m#bb1al$'
+#KEY IS deployed to heroku environment variable; stored locally in text file diseaseMatcher/secret_key_holder.txt
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = []
 

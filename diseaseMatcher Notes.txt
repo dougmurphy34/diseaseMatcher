@@ -26,7 +26,7 @@ Steps to Deploy:
 
     Configure settings.py
         debug=FALSE
-        secret key hidden
+        secret key hidden - using os.environ['SECRET_KEY'] for environment variable set on Heroku
         DB settings
 
     Populate database
