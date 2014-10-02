@@ -20,6 +20,11 @@ Tools used:     django 1.6.5 web framework (lab standard, personal preference fo
 Steps to Deploy:
     !!!This section is a work in progress.  Including it now to have accurate record of steps to populate database.
 
+    Heroku commands from git-bash:
+        git push heroku master
+        heroku run python manage.py syncdb
+        heroku run python diseaseMatcherApp/XMLdataLoader.py
+
     Install dependencies - more detail to come
         Python, Django, MariaDB
         http://www.jeffknupp.com/blog/2013/12/18/starting-a-django-16-project-the-right-way/)

@@ -20,7 +20,7 @@ Workplan:
 import xml.etree.ElementTree as xml
 import time
 import datetime
-
+import urllib
 
 
 import os
@@ -30,12 +30,14 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'diseaseMatcher.settings'
 from diseaseMatcherApp.models import Abstract, GoldStandardMatch
 
 
-#my_conn = _mysql.connect(host="localhost", user="root", passwd="t0blaive", db="diseasematcherdb")
+#Load XML data from web (figshare)
+tree = xml.parse(urllib.urlopen('http://files.figshare.com/1672118/ncbi_dev_bioc.xml'))
 
-tree = xml.parse("D:/Python27/diseaseMatcher/diseaseMatcher/Aug15_ncbi_dev_bioc.xml")
+#This loads the xml from a local file.  Backup plan if web link is lost
+#tree = xml.parse("D:/Python27/diseaseMatcher/diseaseMatcher/Aug15_ncbi_dev_bioc.xml")
 
 root = tree.getroot()
-abstract_count = 0;
+abstract_count = 0
 
 abstract_list = root.findall('document')
 
